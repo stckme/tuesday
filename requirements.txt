@@ -1,0 +1,5 @@
+fastapi
+peewee
+celery
+uvicorn
+honcho
