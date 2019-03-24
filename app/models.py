@@ -2,7 +2,16 @@ from enum import Enum
 
 from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
-from appbase.pw import db, CommonModel
+from commonlib.db import create_pgdb_pool, create_base_model, created
+
+import settings
+
+db = create_pgdb_pool(database=settings.DB_NAME)
+BaseModel = create_base_model(db)
+
+
+class CommonModel(BaseModel):
+    created = created()
 
 
 class Commenter(CommonModel):
