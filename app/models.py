@@ -99,3 +99,18 @@ class CommentActionLog:
     actions = BinaryJSONField(default={})
     # actions: {t1: {actor: <int>, action: <int:action-id>}, t2: {actor: ..},..}
     #   actor: <int> # 0 is reserved for system
+
+# Setup helpers
+
+the_models = BaseModel.__subclasses__() + CommonModel.__subclasses__()
+
+
+def setup_db():
+    db.create_tables(the_models, fail_silently=True)
+
+
+def destroy_db():
+    for o in the_models[::-1]:
+        if o.table_exists():
+            o.drop_table()
+            print('DROP: ' + o._meta.name)
