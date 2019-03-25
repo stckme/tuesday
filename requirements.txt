@@ -3,3 +3,4 @@ peewee
 celery
 uvicorn
 honcho
+apphelpers

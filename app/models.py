@@ -2,7 +2,7 @@ from enum import Enum
 
 from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
-from commonlib.db import create_pgdb_pool, create_base_model, created
+from apphelpers.db import create_pgdb_pool, create_base_model, created
 
 import settings
 
