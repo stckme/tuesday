@@ -19,7 +19,7 @@ class Commenter(CommonModel):
     username = TextField(unique=True)
     name = TextField()
     enabled = BooleanField(default=True)
-    badges = ArrayField()
+    badges = ArrayField(default=[])
     bio = TextField()
     web = TextField()
     verified = BooleanField(default=False)
@@ -27,7 +27,7 @@ class Commenter(CommonModel):
 
 class Publication(CommonModel):
     name = TextField(null=False)
-    pattern = TextField(null=False)
+    host = TextField(null=False)
 
 
 class Asset(CommonModel):
@@ -45,7 +45,7 @@ class BaseComment(CommonModel):
     ip_address = TextField()
 
 
-class PendingComment(CommonModel):
+class PendingComment(BaseComment):
     pass
 
 
