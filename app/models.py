@@ -2,9 +2,9 @@ from enum import Enum
 
 from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
-from apphelpers.db import create_pgdb_pool, create_base_model, created
+from apphelpers.db.peewee import create_pgdb_pool, create_base_model, created
 
-import settings
+from converge import settings
 
 db = create_pgdb_pool(database=settings.DB_NAME)
 BaseModel = create_base_model(db)
@@ -12,6 +12,10 @@ BaseModel = create_base_model(db)
 
 class CommonModel(BaseModel):
     created = created()
+
+
+class TestModel(CommonModel):
+    name = TextField(default="default text")
 
 
 class Commenter(CommonModel):
