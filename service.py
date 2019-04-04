@@ -1,13 +1,16 @@
+import datetime
+
 import app.bootstrap
 
-from fastapi import FastAPI
+import hug
+
 from app.endpoints import setup_routes
 
 
 def make_app():
-    app = FastAPI()
-    setup_routes(app)
-    return app
+
+    router = hug.route.API(__name__)
+    setup_routes(router)
 
 
-app = make_app()
+make_app()
