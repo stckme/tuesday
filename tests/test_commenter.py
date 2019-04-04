@@ -1,18 +1,16 @@
+from tests.data import test_commenter
+from app.models import setup_db, destroy_db
 from app.libs import commenter as commenterlib
 
 
-test_commenter = dict(
-    uid=1,
-    username="tester",
-    name="test user",
-    bio="I am a tester",
-    web="test.scroll.in"
-)
+def test_suite_setup():
+    destroy_db()
+    setup_db()
 
 
 def test_create():
-    commenter = commenterlib.create(**test_commenter)
-    assert commenter.id == 1
+    commenter_id = commenterlib.create(**test_commenter)
+    assert commenter_id == 1
 
 
 def test_get():

@@ -4,7 +4,8 @@ from app.models import Commenter
 
 
 def create(uid, username, name, bio, web):
-    return Commenter.create(uid=uid, username=username, name=name, bio=bio, web=web)
+    commenter = Commenter.create(uid=uid, username=username, name=name, bio=bio, web=web)
+    return commenter.id
 
 
 def get(id):

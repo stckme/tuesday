@@ -30,10 +30,25 @@ class Publication(CommonModel):
     host = TextField(null=False)
 
 
+class asset_request_statuses(Enum):
+    pending = 0
+    accepted = 1
+    rejected = 2
+    cancelled = 3
+
+
 class Asset(CommonModel):
     url = TextField()
     publication = ForeignKeyField(Publication, null=True)
     open_till = DateTimeField()
+
+
+class AssetRequest(CommonModel):
+    url = TextField()
+    publication = ForeignKeyField(Publication, null=True)
+    requester = IntegerField(null=True)
+    approver = IntegerField(null=True)
+    status = IntegerField(null=False, default=asset_request_statuses.pending.value)
 
 
 class BaseComment(CommonModel):
@@ -67,13 +82,6 @@ class CommenterStats(CommonModel):
     comments = IntegerField(default={})
     reported = IntegerField(default={})
     editor_picks = IntegerField(default=0)
-
-
-class AssetRequest(CommonModel):
-    url = TextField(Asset)
-    requester = IntegerField(null=True)
-    approver = IntegerField(null=True)
-    status = IntegerField(default=0)  # 0: pending, 1: accepted, 2: rejected
 
 
 class FlaggedReport(CommonModel):

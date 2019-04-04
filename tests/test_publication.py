@@ -1,15 +1,16 @@
+from tests.data import test_publication
+from app.models import setup_db, destroy_db
 from app.libs import publication as publicationlib
 
 
-test_publication = dict(
-    name='Scroll Media',
-    host='scroll.in'
-)
+def test_suite_setup():
+    destroy_db()
+    setup_db()
 
 
 def test_create():
-    publication = publicationlib.create(**test_publication)
-    assert publication.id == 1
+    publication_id = publicationlib.create(**test_publication)
+    assert publication_id == 1
 
 
 def test_get():

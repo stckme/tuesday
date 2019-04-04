@@ -2,7 +2,8 @@ from app.models import Publication
 
 
 def create(name, host):
-    return Publication.create(name=name, host=host)
+    publication = Publication.create(name=name, host=host)
+    return publication.id
 
 
 def get(id):
