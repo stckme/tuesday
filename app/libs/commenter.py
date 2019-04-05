@@ -12,20 +12,10 @@ def get(id):
 
 
 def update(id, mod_data):
-    updatables = set((
-        'uid',
-        'username',
-        'name',
-        'enabled',
-        'badges',
-        'bio',
-        'web',
-        'verified'
-    ))
-    if not updatables.issuperset(mod_data.keys()):
-        raise Exception('not possible')
+    updatables = ('uid', 'username', 'name', 'enabled', 'badges', 'bio', 'web', 'verified')
+    update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
 
-    Commenter.update(**mod_data).where(Commenter.id == id).execute()
+    Commenter.update(**update_dict).where(Commenter.id == id).execute()
 
 
 def delete(id):

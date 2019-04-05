@@ -17,14 +17,10 @@ def get_all():
 
 
 def update(id, mod_data):
-    updatables = set((
-        'name',
-        'domain'
-    ))
-    if not updatables.issuperset(mod_data.keys()):
-        raise Exception('not possible')
+    updatables = ('name', 'domain')
+    update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
 
-    Publication.update(**mod_data).where(Publication.id == id).execute()
+    Publication.update(**update_dict).where(Publication.id == id).execute()
 
 
 def delete(id):

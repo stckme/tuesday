@@ -20,14 +20,6 @@ def test_get():
 
 
 def test_update():
-    mod_data = {"id": 1}
-    try:
-        commenterlib.update(1, mod_data)
-    except:
-        pass
-    else:
-        assert False
-
     mod_data = {"bio": "new_bio"}
     commenterlib.update(1, mod_data)
     commenter = commenterlib.get(1)
