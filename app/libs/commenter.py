@@ -1,5 +1,3 @@
-import logging
-
 from app.models import Commenter
 
 
