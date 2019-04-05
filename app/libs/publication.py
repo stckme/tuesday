@@ -1,8 +1,8 @@
 from app.models import Publication
 
 
-def create(name, host):
-    publication = Publication.create(name=name, host=host)
+def create(name, domain):
+    publication = Publication.create(name=name, domain=domain)
     return publication.id
 
 
@@ -19,7 +19,7 @@ def get_all():
 def update(id, mod_data):
     updatables = set((
         'name',
-        'host'
+        'domain'
     ))
     if not updatables.issuperset(mod_data.keys()):
         raise Exception('not possible')

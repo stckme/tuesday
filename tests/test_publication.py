@@ -33,11 +33,11 @@ def test_update():
     else:
         assert False
 
-    mod_data = {'host': 'scroll.team'}
+    mod_data = {'domain': 'publisher.test.com'}
     publicationlib.update(1, mod_data)
     publication = publicationlib.get(1)
     assert publication['id'] == 1
-    assert publication['host'] == mod_data['host']
+    assert publication['domain'] == mod_data['domain']
 
 
 def test_delete():
