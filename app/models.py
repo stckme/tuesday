@@ -14,16 +14,12 @@ class CommonModel(BaseModel):
     created = created()
 
 
-class TestModel(CommonModel):
-    name = TextField(default="default text")
-
-
 class Commenter(CommonModel):
     uid = IntegerField(index=True, unique=True)
     username = TextField(unique=True)
     name = TextField()
     enabled = BooleanField(default=True)
-    badges = ArrayField()
+    badges = ArrayField(default=[])
     bio = TextField()
     web = TextField()
     verified = BooleanField(default=False)
@@ -31,13 +27,28 @@ class Commenter(CommonModel):
 
 class Publication(CommonModel):
     name = TextField(null=False)
-    pattern = TextField(null=False)
+    host = TextField(null=False)
+
+
+class asset_request_statuses(Enum):
+    pending = 0
+    accepted = 1
+    rejected = 2
+    cancelled = 3
 
 
 class Asset(CommonModel):
     url = TextField()
     publication = ForeignKeyField(Publication, null=True)
     open_till = DateTimeField()
+
+
+class AssetRequest(CommonModel):
+    url = TextField()
+    publication = ForeignKeyField(Publication, null=True)
+    requester = IntegerField(null=True)
+    approver = IntegerField(null=True)
+    status = IntegerField(null=False, default=asset_request_statuses.pending.value)
 
 
 class BaseComment(CommonModel):
@@ -49,7 +60,7 @@ class BaseComment(CommonModel):
     ip_address = TextField()
 
 
-class PendingComment(CommonModel):
+class PendingComment(BaseComment):
     pass
 
 
@@ -71,13 +82,6 @@ class CommenterStats(CommonModel):
     comments = IntegerField(default={})
     reported = IntegerField(default={})
     editor_picks = IntegerField(default=0)
-
-
-class AssetRequest(CommonModel):
-    url = TextField(Asset)
-    requester = IntegerField(null=True)
-    approver = IntegerField(null=True)
-    status = IntegerField(default=0)  # 0: pending, 1: accepted, 2: rejected
 
 
 class FlaggedReport(CommonModel):
