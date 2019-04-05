@@ -27,7 +27,7 @@ class Commenter(CommonModel):
 
 class Publication(CommonModel):
     name = TextField(null=False)
-    host = TextField(null=False)
+    domain = TextField(null=False)
 
 
 class asset_request_statuses(Enum):
