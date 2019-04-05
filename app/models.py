@@ -2,11 +2,12 @@ from enum import Enum
 
 from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
-from apphelpers.db.peewee import create_pgdb_pool, create_base_model, created
+from apphelpers.db.peewee import create_pgdb_pool, create_base_model, created, dbtransaction
 
 from converge import settings
 
 db = create_pgdb_pool(database=settings.DB_NAME)
+dbtransaction = dbtransaction(db)
 BaseModel = create_base_model(db)
 
 

@@ -1,2 +1,2 @@
-def echo(something):
-    return something
+def echo(word):
+    return word
