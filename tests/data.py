@@ -14,7 +14,7 @@ test_commenter = dict(
 
 
 test_asset_request = dict(
-    url='http://publisher.test/1234',
+    url='http://publisher.example.test/1234',
     publication=1,
     requester=123
 )
