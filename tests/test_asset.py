@@ -44,7 +44,7 @@ def test_accept():
 
 @raises(Exception)
 def test_cancel_accepted_request():
-    assetrequestlib.cancel(1)
+    assetrequestlib.cancel(1, 12)
 
 
 def test_update():
