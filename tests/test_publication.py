@@ -25,15 +25,7 @@ def test_get_all():
 
 
 def test_update():
-    mod_data = {'id': 3}
-    try:
-        publicationlib.update(1, mod_data)
-    except:
-        pass
-    else:
-        assert False
-
-    mod_data = {'domain': 'publisher.test.com'}
+    mod_data = {'domain': 'publisher.example.com'}
     publicationlib.update(1, mod_data)
     publication = publicationlib.get(1)
     assert publication['id'] == 1
