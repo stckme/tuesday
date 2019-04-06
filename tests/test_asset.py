@@ -1,3 +1,4 @@
+from nose.tools import raises
 from app.libs import asset as assetlib
 from app.libs import commenter as commenterlib
 from app.libs import publication as publicationlib
@@ -27,7 +28,7 @@ def test_get():
 
 
 def test_accept():
-    assert not assetlib.exist(1)
+    assert not assetlib.exists(1)
 
     asset_request = assetrequestlib.get(1)
     assert asset_request['id'] == 1
@@ -41,15 +42,9 @@ def test_accept():
     assert asset['url'] == asset_request['url']
 
 
+@raises(Exception)
 def test_cancel_accepted_request():
-    try:
-        assetrequestlib.delete(1)
-    except:
-        assert True
-    else:
-        assert False
-    asset_request = assetrequestlib.get(1)
-    assert asset_request
+    assetrequestlib.cancel(1)
 
 
 def test_update():

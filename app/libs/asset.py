@@ -6,7 +6,7 @@ from app.models import Asset
 
 def create_or_replace(id, url, publication, open_till=None):
     if open_till is None:
-        open_till = arrow.utcnow().shift(days=settings.ASSET_OPEN_DURATION).datetime
+        open_till = arrow.utcnow().shift(days=settings.DEFAULT_ASSET_OPEN_DURATION).datetime
     asset = Asset.create(
         id=id,
         url=url,
@@ -16,7 +16,7 @@ def create_or_replace(id, url, publication, open_till=None):
     return asset.id
 
 
-def exist(id):
+def exists(id):
     asset = Asset.select().where(Asset.id == id).first()
     return bool(asset)
 
