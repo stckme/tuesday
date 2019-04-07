@@ -11,6 +11,11 @@ def get(id):
     return publication.to_dict() if publication else None
 
 
+def get_by_domain(domain):
+    publication = Publication.select().where(Publication.domain == domain).first()
+    return publication.to_dict() if publication else None
+
+
 def get_all():
     publications = Publication.select().execute()
     return [publication.to_dict() for publication in publications]
