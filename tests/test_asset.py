@@ -4,7 +4,8 @@ from app.libs import commenter as commenterlib
 from app.libs import publication as publicationlib
 from app.libs import asset_request as assetrequestlib
 from app.models import setup_db, destroy_db, asset_request_statuses
-from tests.data import test_commenter, test_publication, test_asset_request
+from tests.data import test_commenter, test_publication
+from tests.data import test_new_publication_asset_request, test_asset_request
 
 
 def test_suite_setup():
@@ -73,3 +74,11 @@ def test_cancel_pending():
     assetrequestlib.cancel(1, 123)
     asset_request = assetrequestlib.get(1)
     assert asset_request['status'] == asset_request_statuses.cancelled.value
+
+
+def test_create_with_new_publication():
+    asset_request_id = assetrequestlib.create(**test_new_publication_asset_request)
+    assert asset_request_id == 2
+    asset_request = assetrequestlib.get(asset_request_id)
+    assert asset_request['status'] == asset_request_statuses.pending.value
+    assert asset_request['publication'] == 2

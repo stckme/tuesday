@@ -1,11 +1,20 @@
+from urllib.parse import urlsplit
+
 from app.libs import asset as assetlib
+from app.libs import publication as publicationlib
 from app.models import AssetRequest, asset_request_statuses
 
 
-def create(url, publication, requester):
+def create(url, requester):
+    domain = urlsplit(url).netloc
+    publication = publicationlib.get_by_domain(domain)
+    if publication is None:
+        publication_id = publicationlib.create(name=domain, domain=domain)
+    else:
+        publication_id = publication['id']
     asset = AssetRequest.create(
         url=url,
-        publication=publication,
+        publication=publication_id,
         requester=requester
     )
     return asset.id
