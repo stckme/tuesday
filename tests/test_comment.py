@@ -47,9 +47,9 @@ def test_accept():
     assert pending_comment.items() == comment.items()
 
 
-def test_get_all_accepted():
-    assert len(commentlib.get_all()) == 1
-    assert len(commentlib.get_all(page=2, size=50)) == 0
+def test_list_accepted():
+    assert len(commentlib.list_()) == 1
+    assert len(commentlib.list_(page=2, size=50)) == 0
 
 
 def test_update_accepted():
@@ -72,9 +72,9 @@ def test_archive():
     assert archived_comment.items() == comment.items()
 
 
-def test_get_all_archived():
-    assert len(archivedcommentlib.get_all()) == 1
-    assert len(archivedcommentlib.get_all(page=2, size=50)) == 0
+def test_list_archived():
+    assert len(archivedcommentlib.list_()) == 1
+    assert len(archivedcommentlib.list_(page=2, size=50)) == 0
 
 
 def test_update_pending():
@@ -85,9 +85,9 @@ def test_update_pending():
     assert comment['content'] != updated_comment['content']
 
 
-def test_get_all_pending():
-    assert len(pendingcommentlib.get_all()) == 1
-    assert len(pendingcommentlib.get_all(page=2, size=50)) == 0
+def test_list_pending():
+    assert len(pendingcommentlib.list_()) == 1
+    assert len(pendingcommentlib.list_(page=2, size=50)) == 0
 
 
 def test_reject():
@@ -106,6 +106,6 @@ def test_reject():
     assert pending_comment.items() < rejected_comment.items()
 
 
-def test_get_all_rejected():
-    assert len(rejectedcommentlib.get_all()) == 1
-    assert len(rejectedcommentlib.get_all(page=2, size=50)) == 0
+def test_list_rejected():
+    assert len(rejectedcommentlib.list_()) == 1
+    assert len(rejectedcommentlib.list_(page=2, size=50)) == 0

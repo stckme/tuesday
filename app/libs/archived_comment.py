@@ -20,7 +20,7 @@ def get(id):
     return comment.to_dict() if comment else None
 
 
-def get_all(page=1, size=20):
+def list_(page=1, size=20):
     comments = ArchivedComment.select().order_by(ArchivedComment.created.desc()).paginate(page, size)
     return [comment.to_dict() for comment in comments]
 

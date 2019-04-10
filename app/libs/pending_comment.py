@@ -20,7 +20,7 @@ def get(id):
     return pending_comment.to_dict() if pending_comment else None
 
 
-def get_all(page=1, size=20):
+def list_(page=1, size=20):
     comments = PendingComment.select().order_by(PendingComment.created).paginate(page, size)
     return [comment.to_dict() for comment in comments]
 
