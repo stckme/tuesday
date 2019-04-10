@@ -6,6 +6,7 @@ from apphelpers.db.peewee import create_pgdb_pool, create_base_model, created, d
 
 from converge import settings
 
+
 db = create_pgdb_pool(database=settings.DB_NAME)
 dbtransaction = dbtransaction(db)
 BaseModel = create_base_model(db)
@@ -15,6 +16,8 @@ class CommonModel(BaseModel):
     created = created()
 
     class Meta:
+        # In the next major release (Peewee 4.0), legacy_table_names will have a default value of False.
+        # We can remove this at the time of upgrading to Peewee 4.0.
         legacy_table_names = False
 
 
