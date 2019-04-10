@@ -14,6 +14,9 @@ BaseModel = create_base_model(db)
 class CommonModel(BaseModel):
     created = created()
 
+    class Meta:
+        legacy_table_names = False
+
 
 class Commenter(CommonModel):
     uid = IntegerField(index=True, unique=True)
@@ -111,7 +114,13 @@ class CommentActionLog:
 
 # Setup helpers
 
-the_models = BaseModel.__subclasses__() + CommonModel.__subclasses__()
+def get_sub_models(model):
+    models = []
+    for sub_model in model.__subclasses__():
+        models.append(sub_model)
+        models.extend(get_sub_models(sub_model))
+    return models
+the_models = get_sub_models(BaseModel)
 
 
 def setup_db():
