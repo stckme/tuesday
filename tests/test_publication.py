@@ -19,8 +19,8 @@ def test_get():
     assert test_publication.items() < publication.items()
 
 
-def test_get_all():
-    publications = publicationlib.get_all()
+def test_list_():
+    publications = publicationlib.list_()
     assert len(publications) == 1
 
 

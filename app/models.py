@@ -6,6 +6,7 @@ from apphelpers.db.peewee import create_pgdb_pool, create_base_model, created, d
 
 from converge import settings
 
+
 db = create_pgdb_pool(database=settings.DB_NAME)
 dbtransaction = dbtransaction(db)
 BaseModel = create_base_model(db)
@@ -13,6 +14,11 @@ BaseModel = create_base_model(db)
 
 class CommonModel(BaseModel):
     created = created()
+
+    class Meta:
+        # In the next major release (Peewee 4.0), legacy_table_names will have a default value of False.
+        # We can remove this at the time of upgrading to Peewee 4.0.
+        legacy_table_names = False
 
 
 class Commenter(CommonModel):
@@ -97,21 +103,26 @@ class FlaggedReport(CommonModel):
     accepted = BooleanField(default=False)
 
 
-class actions(Enum):
+class comment_actions(Enum):
     approved = 0
     rejected = 1
     picked = 2
 
 
-class CommentActionLog:
-    comment = IntegerField(null=False, unique=True)
-    actions = BinaryJSONField(default={})
-    # actions: {t1: {actor: <int>, action: <int:action-id>}, t2: {actor: ..},..}
-    #   actor: <int> # 0 is reserved for system
+class CommentActionLog(CommonModel):
+    comment = IntegerField(null=False)
+    action = IntegerField(null=False)
+    actor = IntegerField(null=False, default=0)
 
 # Setup helpers
 
-the_models = BaseModel.__subclasses__() + CommonModel.__subclasses__()
+def get_sub_models(model):
+    models = []
+    for sub_model in model.__subclasses__():
+        models.append(sub_model)
+        models.extend(get_sub_models(sub_model))
+    return models
+the_models = get_sub_models(BaseModel)
 
 
 def setup_db():

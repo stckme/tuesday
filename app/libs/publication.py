@@ -16,7 +16,7 @@ def get_by_domain(domain):
     return publication.to_dict() if publication else None
 
 
-def get_all():
+def list_():
     publications = Publication.select().execute()
     return [publication.to_dict() for publication in publications]
 
