@@ -6,7 +6,8 @@ from app.libs import asset_request as assetrequestlib
 from app.libs import pending_comment as pendingcommentlib
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import rejected_comment as rejectedcommentlib
-from app.models import setup_db, destroy_db, asset_request_statuses
+from app.libs import comment_action_log as commentactionloglib
+from app.models import setup_db, destroy_db, asset_request_statuses, comment_actions
 
 from tests.data import test_commenter, test_publication, test_comment
 from tests.data import test_new_publication_asset_request, test_asset_request
@@ -46,6 +47,10 @@ def test_accept():
     comment = commentlib.get(1)
     assert pending_comment.items() == comment.items()
 
+    logs = commentactionloglib.list_by_comment(1, 1, 10)
+    assert len(logs) == 1
+    assert logs[0]["action"] == comment_actions.approved.value
+
 
 def test_list_accepted():
     assert len(commentlib.list_()) == 1
@@ -57,6 +62,10 @@ def test_update_accepted():
     commentlib.update(1, {'editors_pick': True})
     updated_comment = commentlib.get(1)
     assert comment['editors_pick'] != updated_comment['editors_pick']
+
+    logs = commentactionloglib.list_()
+    assert len(logs) == 2
+    assert logs[0]["action"] == comment_actions.picked.value
 
 
 def test_archive():
@@ -80,9 +89,16 @@ def test_list_archived():
 def test_update_pending():
     pending_comment_id = pendingcommentlib.create(**test_comment)
     comment = pendingcommentlib.get(pending_comment_id)
-    pendingcommentlib.update(pending_comment_id, {'content': 'updated content'})
+    pendingcommentlib.update(
+        pending_comment_id,
+        {'content': 'updated content', 'editors_pick': True}
+    )
     updated_comment = pendingcommentlib.get(pending_comment_id)
     assert comment['content'] != updated_comment['content']
+
+    logs = commentactionloglib.list_()
+    assert len(logs) == 3
+    assert logs[0]["action"] == comment_actions.picked.value
 
 
 def test_list_pending():
@@ -104,6 +120,10 @@ def test_reject():
     rejected_comment = rejectedcommentlib.get(rejected_id)
     assert rejected_comment['note'] == note
     assert pending_comment.items() < rejected_comment.items()
+
+    logs = commentactionloglib.list_(page=1, size=10)
+    assert len(logs) == 4
+    assert logs[0]["action"] == comment_actions.rejected.value
 
 
 def test_list_rejected():

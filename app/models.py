@@ -103,17 +103,16 @@ class FlaggedReport(CommonModel):
     accepted = BooleanField(default=False)
 
 
-class actions(Enum):
+class comment_actions(Enum):
     approved = 0
     rejected = 1
     picked = 2
 
 
-class CommentActionLog:
-    comment = IntegerField(null=False, unique=True)
-    actions = BinaryJSONField(default={})
-    # actions: {t1: {actor: <int>, action: <int:action-id>}, t2: {actor: ..},..}
-    #   actor: <int> # 0 is reserved for system
+class CommentActionLog(CommonModel):
+    comment = IntegerField(null=False)
+    action = IntegerField(null=False)
+    actor = IntegerField(null=False, default=0)
 
 # Setup helpers
 

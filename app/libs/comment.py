@@ -1,5 +1,6 @@
-from app.models import Comment
+from app.models import Comment, comment_actions
 from app.libs import archived_comment as archivedcommentlib
+from app.libs import comment_action_log as commentactionloglib
 
 
 def create(id, commenter, editors_pick, asset, content, ip_address, parent, created):
@@ -30,6 +31,12 @@ def update(id, mod_data):
     updatables = ('editors_pick',)
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
     Comment.update(**update_dict).where(Comment.id == id).execute()
+    if update_dict.get('editors_pick'):
+        commentactionloglib.create(
+            comment=id,
+            action=comment_actions.picked.value,
+            actor=0
+        )
 
 
 def exists(id):
