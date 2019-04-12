@@ -75,7 +75,6 @@ def test_fetch_comments_for_commenter():
     assert len(comments) == 5
     assert sum([len(c.get('replies', [])) for c in comments]) == 10
 
-
     comments = assetlib.get_user_accesible_comments(
         1, user=3, parent=0, last_comment=None, limit=10, children_limit=None
     )
