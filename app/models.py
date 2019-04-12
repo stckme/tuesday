@@ -61,7 +61,7 @@ class AssetRequest(CommonModel):
 class BaseComment(CommonModel):
     commenter = ForeignKeyField(Commenter, index=True)
     editors_pick = BooleanField(default=False, index=True)
-    asset = ForeignKeyField(Asset, index=True, unique=True)
+    asset = ForeignKeyField(Asset, index=True)
     content = TextField()
     parent = IntegerField(default=0, null=False)
     ip_address = TextField()

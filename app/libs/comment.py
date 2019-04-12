@@ -52,3 +52,21 @@ def archive(id):
     comment = get(id)
     delete(id)
     return archivedcommentlib.create(**comment)
+
+
+def get_comments_by_asset(asset, parent=0, last_comment=None, limit=None):
+    where = [Comment.asset == asset, Comment.parent == parent]
+    if parent == 0:  # Top Level Comments(Latest First)
+        if last_comment is not None:
+            where.append(Comment.id < last_comment)
+        order = Comment.id.desc()
+    else:  # Second Level Comments fetch(Oldest First)
+        if last_comment is not None:
+            where.append(Comment.id > last_comment)
+        order = Comment.id.asc()
+
+    comments = Comment.select().where(*where).order_by(order)
+    if limit:
+        comments = comments.limit(limit)
+
+    return [comment.to_dict() for comment in comments]
