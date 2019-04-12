@@ -43,40 +43,67 @@ def test_count():
 
 def test_fetch_comments_for_anonymous_user():
     comments = assetlib.get_user_accesible_comments(
-        1, user=None, parent=0, last_comment=None, limit=10, children_limit=None
+        1, user=None, parent=0, last_comment=None, limit=10, replies_limit=None
     )
     assert len(comments) == 4
     assert sum([len(c.get('replies', [])) for c in comments]) == 7
 
     comments = assetlib.get_user_accesible_comments(
-        1, user=None, parent=0, last_comment=8, limit=10, children_limit=None
+        1, user=None, parent=0, last_comment=8, limit=10, replies_limit=None
     )
     assert len(comments) == 2
     assert sum([len(c.get('replies', [])) for c in comments]) == 5
 
     comments = assetlib.get_user_accesible_comments(
-        1, user=None, parent=0, last_comment=1, limit=10, children_limit=None
+        1, user=None, parent=0, last_comment=1, limit=10, replies_limit=None
     )
     assert len(comments) == 0
     assert sum([len(c.get('replies', [])) for c in comments]) == 0
 
 
-
 def test_fetch_comments_for_commenter():
     comments = assetlib.get_user_accesible_comments(
-        1, user=1, parent=0, last_comment=None, limit=10, children_limit=None
+        1, user=1, parent=0, last_comment=None, limit=10, replies_limit=None
     )
     assert len(comments) == 5
     assert sum([len(c.get('replies', [])) for c in comments]) == 8
 
     comments = assetlib.get_user_accesible_comments(
-        1, user=2, parent=0, last_comment=None, limit=10, children_limit=None
+        1, user=1, parent=0, last_comment=None, limit=3, replies_limit=2
+    )
+    assert len(comments) == 3
+    assert sum([len(c.get('replies', [])) for c in comments]) == 2
+
+    comments = assetlib.get_user_accesible_comments(
+        1, user=2, parent=0, last_comment=None, limit=10, replies_limit=None
     )
     assert len(comments) == 5
     assert sum([len(c.get('replies', [])) for c in comments]) == 10
 
     comments = assetlib.get_user_accesible_comments(
-        1, user=3, parent=0, last_comment=None, limit=10, children_limit=None
+        1, user=3, parent=0, last_comment=None, limit=10, replies_limit=None
     )
     assert len(comments) == 5
     assert sum([len(c.get('replies', [])) for c in comments]) == 9
+
+
+def test_fetch_replies_for_commenter():
+    comments = assetlib.get_user_accesible_comments(
+        1, user=1, parent=4, last_comment=None, limit=10
+    )
+    assert len(comments) == 4
+
+    comments = assetlib.get_user_accesible_comments(
+        1, user=3, parent=4, last_comment=None, limit=10
+    )
+    assert len(comments) == 3
+
+    comments = assetlib.get_user_accesible_comments(
+        1, user=1, parent=4, last_comment=5, limit=10
+    )
+    assert len(comments) == 3
+
+    comments = assetlib.get_user_accesible_comments(
+        1, user=1, parent=4, last_comment=6, limit=2
+    )
+    assert len(comments) == 2
