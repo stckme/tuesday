@@ -59,5 +59,6 @@ test_pending_comments = [
     dict(commenter=1, editors_pick=False, asset=1, content="com 17", ip_address="127.0.0.1", parent=4),
     dict(commenter=2, editors_pick=False, asset=1, content="com 18", ip_address="127.0.0.1", parent=4),
     dict(commenter=2, editors_pick=False, asset=1, content="com 19", ip_address="127.0.0.1", parent=8),
-    dict(commenter=3, editors_pick=False, asset=1, content="com 20", ip_address="127.0.0.1", parent=8)
+    dict(commenter=3, editors_pick=False, asset=1, content="com 20", ip_address="127.0.0.1", parent=8),
+    dict(commenter=3, editors_pick=False, asset=1, content="com 21", ip_address="127.0.0.1", parent=6)
 ]

@@ -34,17 +34,16 @@ def get_comments(id, parent=0, last_comment=None, limit=10, replies_limit=None):
     approved_comments = commentlib.get_comments_by_asset(
         asset=id, parent=parent, last_comment=last_comment, limit=limit
     )
-    if parent == 0:
-        approved_comments = [
-            {
-                **comment,
-                'pending': False,
-                'replies': get_comments(id, parent=comment['id'], limit=replies_limit)
-            }
-            for comment in approved_comments
-        ]
-    else:
-        approved_comments = [{**comment, 'pending': False} for comment in approved_comments]
+    approved_comments = [
+        {
+            **comment,
+            'pending': False,
+            'replies': get_comments(
+                id, parent=comment['id'], limit=replies_limit, replies_limit=replies_limit
+            )
+        }
+        for comment in approved_comments
+    ]
 
     # Getting Pending Comments
     pending_comments = pendingcommentlib.get_comments_by_asset(
@@ -61,6 +60,20 @@ def get_comments(id, parent=0, last_comment=None, limit=10, replies_limit=None):
     return comments
 
 
+def filter_user_accessible_comments(user, comments, limit, replies_limit=None):
+    user_accessible_comments = []
+    for comment in comments:
+        if comment['pending'] is False or comment['commenter'] == user:
+            comment['replies'] = filter_user_accessible_comments(
+                user, comment.get('replies', []), replies_limit, replies_limit
+            )
+            user_accessible_comments.append(comment)
+            limit -= 1
+            if limit == 0:
+                break
+    return user_accessible_comments
+
+
 def get_user_accesible_comments(id, user=None, parent=0, last_comment=None, limit=None, replies_limit=None):
     limit = limit if limit else settings.DEFAULT_COMMENTS_FETCH_LIMIT
     replies_limit = replies_limit if replies_limit else settings.DEFAULT_REPLIES_FETCH_LIMIT
@@ -69,17 +82,4 @@ def get_user_accesible_comments(id, user=None, parent=0, last_comment=None, limi
         id, parent=parent, last_comment=last_comment,
         limit=limit, replies_limit=replies_limit
     )
-
-    user_accessible_comments = []
-    for comment in comments:
-        if comment['pending'] is False or comment['commenter'] == user:
-            comment['replies'] = [
-                reply for reply in comment.get('replies', [])[:replies_limit]
-                if reply['pending'] is False or reply['commenter'] == user
-            ]
-            user_accessible_comments.append(comment)
-            limit -= 1
-        if limit == 0:
-            break
-
-    return user_accessible_comments
+    return filter_user_accessible_comments(user, comments, limit, replies_limit)

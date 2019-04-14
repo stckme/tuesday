@@ -37,7 +37,7 @@ def test_suite_setup():
 
 
 def test_count():
-    assert len(pendingcommentlib.list_()) == 9
+    assert len(pendingcommentlib.list_()) == 10
     assert len(commentlib.list_()) == 11
 
 
@@ -119,7 +119,7 @@ def test_fetch_comments_for_commenter():
             assert reply['id'] == expected_replies_ids[ind][rind]
 
     comments = assetlib.get_user_accesible_comments(
-        1, user=3, parent=0, last_comment=None, limit=10, replies_limit=None
+        1, user=3, parent=0, last_comment=None, limit=10, replies_limit=3
     )
     assert len(comments) == 5
     assert sum([len(c.get('replies', [])) for c in comments]) == 9
@@ -155,3 +155,19 @@ def test_fetch_replies_for_commenter():
     )
     assert len(replies) == 2
     assert [reply['id'] for reply in replies] == [7, 17]
+
+
+def test_nested_comment():
+    comments = assetlib.get_user_accesible_comments(
+        1, user=3, parent=0, last_comment=None, limit=10, replies_limit=5
+    )
+    assert len(comments) == 5
+    assert sum([len(c.get('replies', [])) for c in comments]) == 9
+    expected_comment_ids = [14, 11, 8, 4, 1]
+    expected_replies_ids = [[], [], [9, 10, 20], [5, 6, 7], [2, 3, 16]]
+    for ind, comment in enumerate(comments):
+        assert comment['id'] == expected_comment_ids[ind]
+        for rind, reply in enumerate(comment['replies']):
+            assert reply['id'] == expected_replies_ids[ind][rind]
+            if reply['id'] == 6:
+                assert reply['replies'][0]['id'] == 21
