@@ -66,7 +66,6 @@ def test_fetch_comments_for_anonymous_user():
         for rind, reply in enumerate(comment['replies']):
             assert reply['id'] == expected_replies_ids[ind][rind]
 
-
     comments = assetlib.get_user_accesible_comments(
         1, user=None, parent=0, last_comment=1, limit=10, replies_limit=None
     )
@@ -107,7 +106,6 @@ def test_fetch_comments_for_commenter():
         for rind, reply in enumerate(comment['replies']):
             assert reply['id'] == expected_replies_ids[ind][rind]
 
-
     comments = assetlib.get_user_accesible_comments(
         1, user=2, parent=0, last_comment=None, limit=10, replies_limit=None
     )
@@ -119,7 +117,6 @@ def test_fetch_comments_for_commenter():
         assert comment['id'] == expected_comment_ids[ind]
         for rind, reply in enumerate(comment['replies']):
             assert reply['id'] == expected_replies_ids[ind][rind]
-
 
     comments = assetlib.get_user_accesible_comments(
         1, user=3, parent=0, last_comment=None, limit=10, replies_limit=None

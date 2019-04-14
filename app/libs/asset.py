@@ -48,7 +48,7 @@ def get_comments(id, parent=0, last_comment=None, limit=10, replies_limit=None):
 
     # Getting Pending Comments
     pending_comments = pendingcommentlib.get_comments_by_asset(
-        asset=id, parent=parent, last_comment=last_comment, limit=None
+        asset=id, parent=parent, last_comment=last_comment, limit=limit
     )
     pending_comments = [{**comment, 'pending': True} for comment in pending_comments]
 
