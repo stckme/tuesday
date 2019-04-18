@@ -104,9 +104,10 @@ def filter_inaccessible_comments(user_id, comments, limit, replies_limit=None):
                 user_id, comment.get('replies', []), replies_limit, replies_limit
             )
             user_accessible_comments.append(comment)
-            limit -= 1
-            if limit == 0:
-                break
+            if limit is not None:
+                limit -= 1
+                if limit == 0:
+                    break
     return user_accessible_comments
 
 
