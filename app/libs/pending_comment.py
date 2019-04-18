@@ -67,3 +67,15 @@ def reject(id, note=''):
         actor=0
     )
     return rejectedcommentlib.create(note=note, **pending_comment)
+
+
+def get_replies(parent, limit=None, offset=None):
+    where = [PendingComment.parent == parent]
+    if offset is not None:
+        where.append(PendingComment.id > offset)
+
+    comments = PendingComment.select().where(*where).order_by(PendingComment.id.asc())
+    if limit:
+        comments = comments.limit(limit)
+
+    return [comment.to_dict() for comment in comments]

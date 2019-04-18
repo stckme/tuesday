@@ -1,2 +1,2 @@
-def echo(word):
+def echo(word=':-)'):
     return word
