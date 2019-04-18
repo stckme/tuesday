@@ -69,18 +69,12 @@ def reject(id, note=''):
     return rejectedcommentlib.create(note=note, **pending_comment)
 
 
-def get_comments_by_asset(asset, parent=0, last_comment=None, limit=None):
-    where = [PendingComment.asset == asset, PendingComment.parent == parent]
-    if parent == 0:  # Top Level Comments(Latest First)
-        if last_comment is not None:
-            where.append(PendingComment.id < last_comment)
-        order = PendingComment.id.desc()
-    else:  # Second Level Comments fetch(Oldest First)
-        if last_comment is not None:
-            where.append(PendingComment.id > last_comment)
-        order = PendingComment.id.asc()
+def get_replies(parent, limit=None, offset=None):
+    where = [PendingComment.parent == parent]
+    if offset is not None:
+        where.append(PendingComment.id > offset)
 
-    comments = PendingComment.select().where(*where).order_by(order)
+    comments = PendingComment.select().where(*where).order_by(PendingComment.id.asc())
     if limit:
         comments = comments.limit(limit)
 
