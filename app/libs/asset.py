@@ -28,8 +28,8 @@ def get(id):
     return asset.to_dict() if asset else None
 
 
-def get_pending_comments(asset, parent=0, offset=None, limit=None):
-    where = [PendingComment.asset == asset, PendingComment.parent == parent]
+def get_pending_comments(id, parent=0, offset=None, limit=None):
+    where = [PendingComment.asset == id, PendingComment.parent == parent]
     if offset is not None:
         where.append(PendingComment.id < offset)
     comments = PendingComment.select().where(*where).order_by(PendingComment.id.desc())
@@ -39,8 +39,8 @@ def get_pending_comments(asset, parent=0, offset=None, limit=None):
     return [comment.to_dict() for comment in comments]
 
 
-def get_approved_comments(asset, parent=0, offset=None, limit=None):
-    where = [Comment.asset == asset, Comment.parent == parent]
+def get_approved_comments(id, parent=0, offset=None, limit=None):
+    where = [Comment.asset == id, Comment.parent == parent]
     if offset is not None:
         where.append(Comment.id < offset)
     comments = Comment.select().where(*where).order_by(Comment.id.desc())
@@ -74,9 +74,7 @@ def get_unfiltered_replies(parent, limit=10, offset=None):
 # Todo Add Caching
 def get_unfiltered_comments(id, parent=0, offset=None, limit=10, replies_limit=None):
     # Getting Approved Comments
-    approved_comments = get_approved_comments(
-        asset=id, parent=parent, offset=offset, limit=limit
-    )
+    approved_comments = get_approved_comments(id, parent=parent, offset=offset, limit=limit)
     approved_comments = [
         {
             **comment,
@@ -87,9 +85,7 @@ def get_unfiltered_comments(id, parent=0, offset=None, limit=10, replies_limit=N
     ]
 
     # Getting Pending Comments
-    pending_comments = get_pending_comments(
-        asset=id, parent=parent, offset=offset, limit=limit
-    )
+    pending_comments = get_pending_comments(id, parent=parent, offset=offset, limit=limit)
     pending_comments = [{**comment, 'pending': True} for comment in pending_comments]
 
     # Combining Approved & Pending Comments
