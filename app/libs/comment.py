@@ -52,3 +52,15 @@ def archive(id):
     comment = get(id)
     delete(id)
     return archivedcommentlib.create(**comment)
+
+
+def get_replies(parent, limit=None, offset=None):
+    where = [Comment.parent == parent]
+    if offset is not None:
+        where.append(Comment.id > offset)
+
+    comments = Comment.select().where(*where).order_by(Comment.id.asc())
+    if limit:
+        comments = comments.limit(limit)
+
+    return [comment.to_dict() for comment in comments]
