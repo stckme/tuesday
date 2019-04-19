@@ -122,3 +122,26 @@ def get_replies(parent, user_id=None, limit=None, offset=None):
     limit = limit if limit else settings.DEFAULT_COMMENTS_FETCH_LIMIT
     replies = get_unfiltered_replies(parent=parent, limit=limit, offset=offset)
     return filter_inaccessible_comments(user_id, replies, limit, limit)
+
+
+def get_approved_comments_count(id, offset=None):
+    where = [Comment.asset == id]
+    if offset is not None:
+        where.append(
+            (Comment.id < offset) | ((Comment.parent < offset) & (Comment.parent != 0))
+        )
+    return Comment.select().where(*where).count()
+
+
+def get_pending_comments_count(id, offset=None, user_id=None):
+    where = [PendingComment.asset == id, PendingComment.commenter == user_id]
+    if offset is not None:
+        where.append(
+            (PendingComment.id < offset) |
+            ((PendingComment.parent < offset) & (PendingComment.parent != 0))
+        )
+    return PendingComment.select().where(*where).count()
+
+
+def get_comments_count(id, offset=None, user_id=None):
+    return get_approved_comments_count(id, offset) + get_pending_comments_count(id, offset, user_id)
