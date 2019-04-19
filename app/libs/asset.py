@@ -122,3 +122,16 @@ def get_replies(parent, user_id=None, limit=None, offset=None):
     limit = limit if limit else settings.DEFAULT_COMMENTS_FETCH_LIMIT
     replies = get_unfiltered_replies(parent=parent, limit=limit, offset=offset)
     return filter_inaccessible_comments(user_id, replies, limit, limit)
+
+
+# Todo Add Caching
+def get_approved_comments_count(id):
+    return Comment.select().where(Comment.asset == id).count()
+
+
+def get_pending_comments_count(id):
+    return PendingComment.select().where(PendingComment.asset == id).count()
+
+
+def get_comments_count(id):
+    return get_approved_comments_count(id)
