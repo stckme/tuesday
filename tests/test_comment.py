@@ -3,6 +3,7 @@ from app.libs import comment as commentlib
 from app.libs import commenter as commenterlib
 from app.libs import publication as publicationlib
 from app.libs import asset_request as assetrequestlib
+from app.libs import commenter_stats as commenterstatslib
 from app.libs import pending_comment as pendingcommentlib
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import rejected_comment as rejectedcommentlib
@@ -41,6 +42,8 @@ def test_accept():
 
     pending_comment = pendingcommentlib.get(1)
     pendingcommentlib.approve(1)
+    stats = commenterstatslib.get(pending_comment['commenter'])
+    assert stats['comments'] == 1
 
     assert not pendingcommentlib.exists(1)
     assert commentlib.exists(1)
@@ -62,6 +65,8 @@ def test_update_accepted():
     commentlib.update(1, {'editors_pick': True})
     updated_comment = commentlib.get(1)
     assert comment['editors_pick'] != updated_comment['editors_pick']
+    stats = commenterstatslib.get(comment['commenter'])
+    assert stats['editor_picks'] == 1
 
     logs = commentactionloglib.list_()
     assert len(logs) == 2
@@ -120,6 +125,8 @@ def test_reject():
     rejected_comment = rejectedcommentlib.get(rejected_id)
     assert rejected_comment['note'] == note
     assert pending_comment.items() < rejected_comment.items()
+    stats = commenterstatslib.get(pending_comment['commenter'])
+    assert stats['rejected'] == 1
 
     logs = commentactionloglib.list_(page=1, size=10)
     assert len(logs) == 4

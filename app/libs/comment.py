@@ -1,4 +1,5 @@
 from app.models import Comment, comment_actions
+from app.libs import commenter_stats as commenterstatslib
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
@@ -14,6 +15,7 @@ def create(id, commenter, editors_pick, asset, content, ip_address, parent, crea
         parent=parent,
         created=created
     )
+    commenterstatslib.increase_comments_count(commenter)
     return comment.id
 
 
@@ -31,7 +33,12 @@ def update(id, mod_data):
     updatables = ('editors_pick',)
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
     Comment.update(**update_dict).where(Comment.id == id).execute()
-    if update_dict.get('editors_pick'):
+    if 'editors_pick' in update_dict:
+        comment = get(id)
+        if update_dict['editors_pick'] is True:
+            commenterstatslib.increase_editor_picks_count(comment['commenter'])
+        else:
+            commenterstatslib.decrease_editor_picks_count(comment['commenter'])
         commentactionloglib.create(
             comment=id,
             action=comment_actions.picked.value,

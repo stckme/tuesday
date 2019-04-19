@@ -1,8 +1,12 @@
 from app.models import Commenter
+from app.libs import commenter_stats as commenterstatslib
+
+from converge import settings
 
 
 def create(uid, username, name, bio, web):
     commenter = Commenter.create(uid=uid, username=username, name=name, bio=bio, web=web)
+    commenterstatslib.create(commenter.id)
     return commenter.id
 
 
@@ -20,3 +24,12 @@ def update(id, mod_data):
 
 def delete(id):
     Commenter.delete().where(Commenter.id == id).execute()
+
+
+def calculate_karma(id):
+    karma = 0
+    stats = commenterstatslib.get(id)
+    total_comments = stats['comments'] + stats['rejected']
+    if total_comments >= settings.MIN_COMMENTS_REQUIRED_FOR_KARMA:
+        karma = 100 * stats['comments'] / total_comments
+    return karma

@@ -1,4 +1,5 @@
 from app.models import RejectedComment
+from app.libs import commenter_stats as commenterstatslib
 
 
 def create(id, commenter, editors_pick, asset, content, ip_address, parent, created, note):
@@ -13,6 +14,7 @@ def create(id, commenter, editors_pick, asset, content, ip_address, parent, crea
         created=created,
         note=note
     )
+    commenterstatslib.increase_rejected_count(commenter)
     return comment.id
 
 

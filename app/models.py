@@ -84,10 +84,10 @@ class ArchivedComment(BaseComment):
 
 
 class CommenterStats(CommonModel):
-    # {count: 0, reported: <int>, accepted: <int>, rejected: <int>}
-    commenter = ForeignKeyField(Commenter, index=True)
-    comments = IntegerField(default={})
-    reported = IntegerField(default={})
+    commenter = ForeignKeyField(Commenter, index=True, on_delete='cascade')
+    comments = IntegerField(default=0)
+    reported = IntegerField(default=0)
+    rejected = IntegerField(default=0)
     editor_picks = IntegerField(default=0)
 
 

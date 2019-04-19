@@ -3,6 +3,7 @@ import arrow
 from converge import settings
 from app.models import Asset, PendingComment, Comment
 from app.libs import comment as commentlib
+from app.libs import commenter as commenterlib
 from app.libs import pending_comment as pendingcommentlib
 
 
@@ -54,14 +55,17 @@ def get_approved_comments(id, parent=0, offset=None, limit=None):
 def get_unfiltered_replies(parent, limit=10, offset=None):
     # Getting Approved Comments
     approved_replies = commentlib.get_replies(parent=parent, limit=limit, offset=offset)
-    approved_replies = [
-        {
-            **comment,
-            'pending': False,
-            'replies': get_unfiltered_replies(parent=comment['id'], limit=limit)
-        }
-        for comment in approved_replies
-    ]
+    if settings.NESTED_REPLIES_ALLOWED:
+        approved_replies = [
+            {
+                **comment,
+                'pending': False,
+                'replies': get_unfiltered_replies(parent=comment['id'], limit=limit)
+            }
+            for comment in approved_replies
+        ]
+    else:
+        approved_replies = [{**comment, 'pending': False} for comment in approved_replies]
 
     # Getting Pending Comments
     pending_replies = pendingcommentlib.get_replies(parent=parent, limit=limit, offset=offset)

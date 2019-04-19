@@ -1,7 +1,21 @@
 from app.models import PendingComment, comment_actions
 from app.libs import comment as commentlib
+from app.libs import commenter as commenterlib
 from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
+
+from converge import settings
+
+
+def should_approve(commenter):
+    approval = False
+    if settings.AUTO_APPROVAL:
+        approval = True
+    elif settings.KARMA_BASED_APPROVAL:
+        karma = commenterlib.calculate_karma(commenter)
+        if karma >= settings.MIN_KARMA_REQUIRED_FOR_APPROVAL:
+            approval = True
+    return approval
 
 
 def create(commenter, editors_pick, asset, content, ip_address, parent=0):
@@ -13,6 +27,8 @@ def create(commenter, editors_pick, asset, content, ip_address, parent=0):
         ip_address=ip_address,
         parent=parent
     )
+    if should_approve(commenter):
+        approve(comment.id)
     return comment.id
 
 
