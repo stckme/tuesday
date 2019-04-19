@@ -124,24 +124,14 @@ def get_replies(parent, user_id=None, limit=None, offset=None):
     return filter_inaccessible_comments(user_id, replies, limit, limit)
 
 
-def get_approved_comments_count(id, offset=None):
-    where = [Comment.asset == id]
-    if offset is not None:
-        where.append(
-            (Comment.id < offset) | ((Comment.parent < offset) & (Comment.parent != 0))
-        )
-    return Comment.select().where(*where).count()
+# Todo Add Caching
+def get_approved_comments_count(id):
+    return Comment.select().where(Comment.asset == id).count()
 
 
-def get_pending_comments_count(id, offset=None, user_id=None):
-    where = [PendingComment.asset == id, PendingComment.commenter == user_id]
-    if offset is not None:
-        where.append(
-            (PendingComment.id < offset) |
-            ((PendingComment.parent < offset) & (PendingComment.parent != 0))
-        )
-    return PendingComment.select().where(*where).count()
+def get_pending_comments_count(id):
+    return PendingComment.select().where(PendingComment.asset == id).count()
 
 
-def get_comments_count(id, offset=None, user_id=None):
-    return get_approved_comments_count(id, offset) + get_pending_comments_count(id, offset, user_id)
+def get_comments_count(id):
+    return get_approved_comments_count(id)
