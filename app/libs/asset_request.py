@@ -1,11 +1,12 @@
 from urllib.parse import urlsplit
 
+from apphelpers.rest.hug import user_id
 from app.libs import asset as assetlib
 from app.libs import publication as publicationlib
 from app.models import AssetRequest, asset_request_statuses
 
 
-def create(url, requester):
+def create(url, requester: user_id):
     domain = urlsplit(url).netloc
     publication = publicationlib.get_by_domain(domain)
     if publication is None:
@@ -18,6 +19,7 @@ def create(url, requester):
         requester=requester
     )
     return asset.id
+create.login_required = True
 
 
 def get(id):

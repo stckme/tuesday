@@ -7,7 +7,7 @@ from app.endpoints import setup_routes
 
 import app.models
 
-import settings
+from converge import settings
 
 
 def make_app():

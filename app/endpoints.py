@@ -7,4 +7,4 @@ def setup_routes(factory):
     factory.get('/echo/{word}')(debughelpers.echo)
 
     ar_handlers = (None, arlib.create, None, arlib.get, arlib.update, None)
-    factory.map_resource('/resttest/', handlers=ar_handlers)
+    factory.map_resource('/assets/', handlers=ar_handlers)
