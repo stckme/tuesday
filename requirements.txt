@@ -5,3 +5,7 @@ celery
 uvicorn
 honcho
 apphelpers
+redis
+psycopg2
+converge
+gunicorn
