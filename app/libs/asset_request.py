@@ -1,3 +1,4 @@
+from hashlib import sha1
 from urllib.parse import urlsplit
 
 from apphelpers.rest.hug import user_id
@@ -13,7 +14,11 @@ def create(url, requester: user_id):
         publication_id = publicationlib.create(name=domain, domain=domain)
     else:
         publication_id = publication['id']
+    # asset ids are hashes generated from URLs. Idea is client doesn't need to
+    # query server to find id for certain asset. Client can generate the id
+    # itself from the asset url (provided it knows the hashing technique used)
     asset = AssetRequest.create(
+        id=sha1(bytes(url, 'utf8')).hexdigest(),
         url=url,
         publication=publication_id,
         requester=requester
