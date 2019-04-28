@@ -19,13 +19,17 @@ def create_or_replace(id, url, publication, open_till=None):
 
 
 def exists(id):
-    asset = Asset.select().where(Asset.id == id).first()
-    return bool(asset)
+    return bool(Asset.get_or_none(Asset.id == id))
 
 
 def get(id):
-    asset = Asset.select().where(Asset.id == id).first()
-    return asset.to_dict() if asset else None
+    asset = Asset.get_or_none(Asset.id == id)
+    if asset:
+        return asset.to_dict()
+
+
+def get_by_url(url):
+    return Asset.get_or_none(Asset.url == url)
 
 
 def get_pending_comments(id, parent=0, offset=None, limit=None):

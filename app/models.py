@@ -45,12 +45,14 @@ class asset_request_statuses(Enum):
 
 
 class Asset(CommonModel):
+    id = TextField(primary_key=True, unique=True, index=True)
     url = TextField()
     publication = ForeignKeyField(Publication, null=True)
     open_till = DateTimeField()
 
 
 class AssetRequest(CommonModel):
+    id = TextField(primary_key=True, unique=True, index=True)
     url = TextField()
     publication = ForeignKeyField(Publication, null=True)
     requester = IntegerField(null=True)
