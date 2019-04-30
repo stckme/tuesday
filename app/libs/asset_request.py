@@ -40,7 +40,7 @@ def update(id, mod_data):
     AssetRequest.update(**update_dict).where(AssetRequest.id == id).execute()
 
 
-def approve(id, approver, open_till=None):
+def approve(id, approver: user_id, open_till=None):
     mod_data = {'approver': approver, 'status': asset_request_statuses.accepted.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
     asset_request = get(id)
@@ -50,6 +50,7 @@ def approve(id, approver, open_till=None):
         publication=asset_request['publication'],
         open_till=open_till
     )
+approve.login_required = True
 
 
 def reject(id, approver):
