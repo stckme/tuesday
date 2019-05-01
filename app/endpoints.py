@@ -1,5 +1,6 @@
 import app.libs.debug as debughelpers
 import app.libs.asset_request as arlib
+import app.libs.asset as assetlib
 import apphelpers.sessions as sessionlib
 
 
@@ -9,4 +10,9 @@ def setup_routes(factory):
     factory.get('/whoami')(sessionlib.whoami)
 
     ar_handlers = (None, arlib.create, None, arlib.get, arlib.update, None)
-    factory.map_resource('/assets/', handlers=ar_handlers)
+    factory.map_resource('/assetrequests/', handlers=ar_handlers)
+    factory.post('/assetrequests/{id}/approve')(arlib.approve)
+
+    asset_handlers = (None, None, None, assetlib.get, None, None)
+    factory.map_resource('/assets/', handlers=asset_handlers)
+    factory.get('/assets/{id}/comments/count')(assetlib.get_comments_count)
