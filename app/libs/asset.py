@@ -37,7 +37,7 @@ def get_pending_comments(id, parent=0, offset=None, limit=None):
     if offset is not None:
         where.append(PendingComment.id < offset)
     comments = PendingComment.select(
-            PendingComment, Commenter.username
+            PendingComment, Commenter
         ).join(
             Commenter
         ).where(
@@ -48,7 +48,7 @@ def get_pending_comments(id, parent=0, offset=None, limit=None):
     if limit:
         comments = comments.limit(limit)
 
-    return [{**comment.to_dict(), "commenter": comment.commenter.username} for comment in comments]
+    return [{**comment.to_dict(), "commenter": comment.commenter.to_dict()} for comment in comments]
 
 
 def get_approved_comments(id, parent=0, offset=None, limit=None):
@@ -56,7 +56,7 @@ def get_approved_comments(id, parent=0, offset=None, limit=None):
     if offset is not None:
         where.append(Comment.id < offset)
     comments = Comment.select(
-            Comment, Commenter.username
+            Comment, Commenter
         ).join(
             Commenter
         ).where(
@@ -67,7 +67,7 @@ def get_approved_comments(id, parent=0, offset=None, limit=None):
     if limit:
         comments = comments.limit(limit)
 
-    return [{**comment.to_dict(), "commenter": comment.commenter.username} for comment in comments]
+    return [{**comment.to_dict(), "commenter": comment.commenter.to_dict()} for comment in comments]
 
 
 # Todo Add Caching

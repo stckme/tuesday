@@ -75,7 +75,7 @@ def get_replies(parent, limit=None, offset=None):
         where.append(PendingComment.id > offset)
 
     comments = PendingComment.select(
-            PendingComment, Commenter.username
+            PendingComment, Commenter
         ).join(
             Commenter
         ).where(
@@ -86,4 +86,4 @@ def get_replies(parent, limit=None, offset=None):
     if limit:
         comments = comments.limit(limit)
 
-    return [{**comment.to_dict(), "commenter": comment.commenter.username} for comment in comments]
+    return [{**comment.to_dict(), "commenter": comment.commenter.to_dict()} for comment in comments]
