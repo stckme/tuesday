@@ -12,7 +12,7 @@ def generate_username(name):
 
 
 def create(uid, name, bio, web, username=None):
-    if username is None:
+    if not username:
         username = generate_username(name)
     commenter = Commenter.create(uid=uid, username=username, name=name, bio=bio, web=web)
     return commenter.id
@@ -24,7 +24,7 @@ def get(id):
 
 
 def get_by_username(username):
-    commenter = Commenter.select().where(Commenter.username == username).first()
+    commenter = Commenter.get_or_none(Commenter.username == username)
     return commenter.to_dict() if commenter else None
 
 
