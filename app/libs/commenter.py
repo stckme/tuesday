@@ -1,13 +1,30 @@
 from app.models import Commenter
 
 
-def create(uid, username, name, bio, web):
+def generate_username(name):
+    base_username = ".".join(name.lower().split())
+    username = base_username
+    cnt = 0
+    while get_by_username(username):
+        cnt += 1
+        username = "{}{}".format(base_username, cnt)
+    return username
+
+
+def create(uid, name, bio, web, username=None):
+    if not username:
+        username = generate_username(name)
     commenter = Commenter.create(uid=uid, username=username, name=name, bio=bio, web=web)
     return commenter.id
 
 
 def get(id):
     commenter = Commenter.select().where(Commenter.id == id).first()
+    return commenter.to_dict() if commenter else None
+
+
+def get_by_username(username):
+    commenter = Commenter.get_or_none(Commenter.username == username)
     return commenter.to_dict() if commenter else None
 
 
