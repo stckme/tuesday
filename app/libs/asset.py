@@ -6,6 +6,9 @@ from app.libs import comment as commentlib
 from app.libs import pending_comment as pendingcommentlib
 
 
+commenter_fields = [Commenter.username, Commenter.name, Commenter.badges]
+
+
 def create_or_replace(id, url, publication, open_till=None):
     if open_till is None:
         open_till = arrow.utcnow().shift(days=settings.DEFAULT_ASSET_OPEN_DURATION).datetime
@@ -37,7 +40,7 @@ def get_pending_comments(id, parent=0, offset=None, limit=None):
     if offset is not None:
         where.append(PendingComment.id < offset)
     comments = PendingComment.select(
-            PendingComment, Commenter
+            PendingComment, *commenter_fields
         ).join(
             Commenter
         ).where(
@@ -56,7 +59,7 @@ def get_approved_comments(id, parent=0, offset=None, limit=None):
     if offset is not None:
         where.append(Comment.id < offset)
     comments = Comment.select(
-            Comment, Commenter
+            Comment, *commenter_fields
         ).join(
             Commenter
         ).where(

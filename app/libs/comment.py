@@ -3,6 +3,9 @@ from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
 
+commenter_fields = [Commenter.username, Commenter.name, Commenter.badges]
+
+
 def create(id, commenter, editors_pick, asset, content, ip_address, parent, created):
     comment = Comment.create(
         id=id,
@@ -60,7 +63,7 @@ def get_replies(parent, limit=None, offset=None):
         where.append(Comment.id > offset)
 
     comments = Comment.select(
-            Comment, Commenter
+            Comment, *commenter_fields
         ).join(
             Commenter
         ).where(

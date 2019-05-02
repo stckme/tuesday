@@ -4,6 +4,9 @@ from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
 
+commenter_fields = [Commenter.username, Commenter.name, Commenter.badges]
+
+
 def create(commenter, editors_pick, asset, content, ip_address, parent=0):
     comment = PendingComment.create(
         commenter=commenter,
@@ -75,7 +78,7 @@ def get_replies(parent, limit=None, offset=None):
         where.append(PendingComment.id > offset)
 
     comments = PendingComment.select(
-            PendingComment, Commenter
+            PendingComment, *commenter_fields
         ).join(
             Commenter
         ).where(
