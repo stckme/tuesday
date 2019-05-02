@@ -2,13 +2,13 @@ from app.models import Commenter
 
 
 def generate_username(name):
-    username = ".".join(name.lower().split())
-    next_username = username
+    base_username = ".".join(name.lower().split())
+    username = base_username
     cnt = 0
-    while get_by_username(next_username):
+    while get_by_username(username):
         cnt += 1
-        next_username = "{}{}".format(username, cnt)
-    return next_username
+        username = "{}{}".format(base_username, cnt)
+    return username
 
 
 def create(uid, name, bio, web, username=None):
