@@ -109,10 +109,14 @@ Before you submit a pull request, check that it meets these guidelines:
 Tips
 ----
 
+To run all tests::
+
+    $ hug -f service.py
+    $ nosetests -sxv -c tests/nose.cfg
+
 To run a subset of tests::
 
-
-    $ python -m unittest tests.test_tuesday
+    $ nosetests -sxv -c tests/test_<module>.py
 
 Deploying
 ---------
