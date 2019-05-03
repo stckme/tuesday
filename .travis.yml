@@ -1,16 +1,24 @@
 # Config file for automatic testing at travis-ci.org
 
 language: python
-python:
-  - 3.6
-  - 3.5
-  - 3.4
-  - 2.7
+services:
+  - postgresql
+  - redis-server
+matrix:
+    include:
+      - python: 3.6
+        env: TOXENV=py36
 
-# Command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: pip install -U tox-travis
+install:
+  - pip install -U tox-travis coveralls
+  - pip install -r requirements_dev.txt
 
-# Command to run tests, e.g. python setup.py test
+before_script:
+  - psql -c 'create database defaultdb;' -U postgres
+  - hug -f service.py &
+  - sleep 2
+
 script: tox
 
-
+after_success:
+  - coveralls
