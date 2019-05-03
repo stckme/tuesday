@@ -4,7 +4,7 @@ from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
 
-commenter_fields = [Commenter.username, Commenter.name, Commenter.badges]
+commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
 def create(commenter, editors_pick, asset, content, ip_address, parent=0):

@@ -3,7 +3,7 @@ from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
 
-commenter_fields = [Commenter.username, Commenter.name, Commenter.badges]
+commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
 def create(id, commenter, editors_pick, asset, content, ip_address, parent, created):

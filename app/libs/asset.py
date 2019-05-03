@@ -6,7 +6,7 @@ from app.libs import comment as commentlib
 from app.libs import pending_comment as pendingcommentlib
 
 
-commenter_fields = [Commenter.username, Commenter.name, Commenter.badges]
+commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
 def create_or_replace(id, url, publication, open_till=None):
