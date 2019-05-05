@@ -1,6 +1,9 @@
-from app.models import Comment, comment_actions
+from app.models import Comment, comment_actions, Commenter
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
+
+
+commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
 def create(id, commenter, editors_pick, asset, content, ip_address, parent, created):
@@ -59,8 +62,16 @@ def get_replies(parent, limit=None, offset=None):
     if offset is not None:
         where.append(Comment.id > offset)
 
-    comments = Comment.select().where(*where).order_by(Comment.id.asc())
+    comments = Comment.select(
+            Comment, *commenter_fields
+        ).join(
+            Commenter
+        ).where(
+            *where
+        ).order_by(
+            Comment.id.asc()
+        )
     if limit:
         comments = comments.limit(limit)
 
-    return [comment.to_dict() for comment in comments]
+    return [{**comment.to_dict(), "commenter": comment.commenter.to_dict()} for comment in comments]

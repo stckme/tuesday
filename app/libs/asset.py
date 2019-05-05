@@ -1,9 +1,12 @@
 import arrow
 
 from converge import settings
-from app.models import Asset, PendingComment, Comment
+from app.models import Asset, PendingComment, Comment, Commenter
 from app.libs import comment as commentlib
 from app.libs import pending_comment as pendingcommentlib
+
+
+commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
 def create_or_replace(id, url, publication, open_till=None):
@@ -36,22 +39,38 @@ def get_pending_comments(id, parent=0, offset=None, limit=None):
     where = [PendingComment.asset == id, PendingComment.parent == parent]
     if offset is not None:
         where.append(PendingComment.id < offset)
-    comments = PendingComment.select().where(*where).order_by(PendingComment.id.desc())
+    comments = PendingComment.select(
+            PendingComment, *commenter_fields
+        ).join(
+            Commenter
+        ).where(
+            *where
+        ).order_by(
+            PendingComment.id.desc()
+        )
     if limit:
         comments = comments.limit(limit)
 
-    return [comment.to_dict() for comment in comments]
+    return [{**comment.to_dict(), "commenter": comment.commenter.to_dict()} for comment in comments]
 
 
 def get_approved_comments(id, parent=0, offset=None, limit=None):
     where = [Comment.asset == id, Comment.parent == parent]
     if offset is not None:
         where.append(Comment.id < offset)
-    comments = Comment.select().where(*where).order_by(Comment.id.desc())
+    comments = Comment.select(
+            Comment, *commenter_fields
+        ).join(
+            Commenter
+        ).where(
+            *where
+        ).order_by(
+            Comment.id.desc()
+        )
     if limit:
         comments = comments.limit(limit)
 
-    return [comment.to_dict() for comment in comments]
+    return [{**comment.to_dict(), "commenter": comment.commenter.to_dict()} for comment in comments]
 
 
 # Todo Add Caching
