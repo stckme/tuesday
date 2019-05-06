@@ -7,7 +7,6 @@ class state:
     commenter_id = None
 
 
-
 def test_suite_setup():
     destroy_db()
     setup_db()
