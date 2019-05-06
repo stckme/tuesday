@@ -66,7 +66,7 @@ class BaseComment(CommonModel):
     asset = ForeignKeyField(Asset, index=True)
     content = TextField()
     parent = IntegerField(default=0, null=False)
-    ip_address = TextField()
+    ip_address = TextField(null=True)
 
 
 class PendingComment(BaseComment):
