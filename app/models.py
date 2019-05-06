@@ -22,7 +22,7 @@ class CommonModel(BaseModel):
 
 
 class Commenter(CommonModel):
-    uid = IntegerField(index=True, unique=True)
+    id = IntegerField(index=True, unique=True)
     username = TextField(unique=True)
     name = TextField()
     enabled = BooleanField(default=True)

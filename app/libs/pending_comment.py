@@ -1,5 +1,8 @@
+from apphelpers.rest.hug import user_id, user_name
+
 from app.models import PendingComment, comment_actions, Commenter
 from app.libs import comment as commentlib
+from app.libs import commenter as commenterlib
 from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
@@ -7,7 +10,9 @@ from app.libs import comment_action_log as commentactionloglib
 commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
-def create(commenter, editors_pick, asset, content, ip_address, parent=0):
+def create(commenter: user_id, editors_pick, asset, content, ip_address, parent=0):
+    if not commenterlib.exists(commenter):
+        commenterlib.create(id=commenter, name=user_name())
     comment = PendingComment.create(
         commenter=commenter,
         editors_pick=editors_pick,

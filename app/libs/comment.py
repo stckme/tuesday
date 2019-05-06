@@ -1,3 +1,5 @@
+from apphelpers.rest.hug import user_id
+
 from app.models import Comment, comment_actions, Commenter
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
@@ -6,7 +8,7 @@ from app.libs import comment_action_log as commentactionloglib
 commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
-def create(id, commenter, editors_pick, asset, content, ip_address, parent, created):
+def create(id, commenter: user_id, editors_pick, asset, content, ip_address, parent, created):
     comment = Comment.create(
         id=id,
         commenter=commenter,
