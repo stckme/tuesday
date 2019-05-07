@@ -11,11 +11,15 @@ def generate_username(name):
     return username
 
 
-def create(uid, name, bio, web, username=None):
+def create(id, name, bio="", web=None, username=None):
     if not username:
         username = generate_username(name)
-    commenter = Commenter.create(uid=uid, username=username, name=name, bio=bio, web=web)
+    commenter = Commenter.create(id=id, username=username, name=name, bio=bio, web=web)
     return commenter.id
+
+
+def exists(id):
+    return bool(Commenter.get_or_none(Commenter.id == id))
 
 
 def get(id):

@@ -8,7 +8,7 @@ test_publication = dict(
 
 
 test_commenter = dict(
-    uid=1,
+    id=1,
     name='test user',
     bio='I am a tester',
     web='publisher.test.in'
@@ -36,6 +36,5 @@ test_comment = dict(
     editors_pick=False,
     asset=test_asset_request_id,
     content="test comment",
-    ip_address="127.0.0.1",
     parent=1
 )

@@ -1,10 +1,15 @@
 import arrow
+import datetime
 
 from converge import settings
-from app.models import Asset, PendingComment, Comment
-from app.libs import comment as commentlib
-from app.libs import pending_comment as pendingcommentlib
 from apphelpers.rest.hug import user_id
+from app.models import Asset, PendingComment, Comment, Commenter
+from app.libs import comment as commentlib
+from app.libs import commenter as commenterlib
+from app.libs import pending_comment as pendingcommentlib
+
+
+commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
 def create_or_replace(id, url, publication, open_till=None):
@@ -37,22 +42,38 @@ def get_pending_comments(id, parent=0, offset=None, limit=None):
     where = [PendingComment.asset == id, PendingComment.parent == parent]
     if offset is not None:
         where.append(PendingComment.id < offset)
-    comments = PendingComment.select().where(*where).order_by(PendingComment.id.desc())
+    comments = PendingComment.select(
+            PendingComment, *commenter_fields
+        ).join(
+            Commenter
+        ).where(
+            *where
+        ).order_by(
+            PendingComment.id.desc()
+        )
     if limit:
         comments = comments.limit(limit)
 
-    return [comment.to_dict() for comment in comments]
+    return [{**comment.to_dict(), "commenter": comment.commenter.to_dict()} for comment in comments]
 
 
 def get_approved_comments(id, parent=0, offset=None, limit=None):
     where = [Comment.asset == id, Comment.parent == parent]
     if offset is not None:
         where.append(Comment.id < offset)
-    comments = Comment.select().where(*where).order_by(Comment.id.desc())
+    comments = Comment.select(
+            Comment, *commenter_fields
+        ).join(
+            Commenter
+        ).where(
+            *where
+        ).order_by(
+            Comment.id.desc()
+        )
     if limit:
         comments = comments.limit(limit)
 
-    return [comment.to_dict() for comment in comments]
+    return [{**comment.to_dict(), "commenter": comment.commenter.to_dict()} for comment in comments]
 
 
 # Todo Add Caching
@@ -100,7 +121,7 @@ def get_unfiltered_comments(id, parent=0, offset=None, limit=10, replies_limit=N
 def filter_inaccessible_comments(user_id, comments, limit, replies_limit=None):
     user_accessible_comments = []
     for comment in comments:
-        if comment['pending'] is False or comment['commenter'] == user_id:
+        if comment['pending'] is False or comment['commenter']['id'] == user_id:
             comment['replies'] = filter_inaccessible_comments(
                 user_id, comment.get('replies', []), replies_limit, replies_limit
             )
@@ -140,3 +161,18 @@ def get_pending_comments_count(id):
 
 def get_comments_count(id):
     return get_approved_comments_count(id)
+
+
+def get_comments_view(id, user_id: user_id=None, offset=None, limit=None):
+    response = {}
+    response["comments"] = get_comments(id, user_id, offset=offset, limit=limit)
+
+    user = commenterlib.get(user_id)
+    response["commenter"] = {
+        "username": user["username"],
+        "banned": not user["enabled"]
+    }
+
+    asset = get(id)
+    response["meta"] = {"commenting_closed": asset["open_till"]>=datetime.datetime.utcnow()}
+    return response

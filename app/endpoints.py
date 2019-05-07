@@ -18,7 +18,7 @@ def setup_routes(factory):
     asset_handlers = (None, None, None, assetlib.get, None, None)
     factory.map_resource('/assets/', handlers=asset_handlers)
     factory.get('/assets/{id}/comments/count')(assetlib.get_comments_count)
-    factory.get('/assets/{id}/comments')(assetlib.get_comments)
+    factory.get('/assets/{id}/comments')(assetlib.get_comments_view)
     factory.get('/assets/{id}/replies')(assetlib.get_replies)
 
     pc_handlers = (pclib.list_, pclib.create, None, pclib.get, None, None)
