@@ -36,7 +36,7 @@ def get(id):
 
 
 def get_all(ids):
-    assets = Asset.select().where(Asset.id << ids).all()
+    assets = Asset.select().where(Asset.id << ids)
     return [asset.to_dict() for asset in assets]
 
 
