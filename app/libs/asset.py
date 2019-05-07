@@ -3,6 +3,7 @@ import datetime
 
 from converge import settings
 from apphelpers.rest.hug import user_id
+from apphelpers.errors import NotFoundError
 from app.models import Asset, PendingComment, Comment, Commenter
 from app.libs import comment as commentlib
 from app.libs import commenter as commenterlib
@@ -32,6 +33,11 @@ def get(id):
     asset = Asset.get_or_none(Asset.id == id)
     if asset:
         return asset.to_dict()
+
+
+def get_all(ids):
+    assets = Asset.select().where(Asset.id << ids).all()
+    return [asset.to_dict() for asset in assets]
 
 
 def get_by_url(url):
@@ -176,3 +182,26 @@ def get_comments_view(id, user_id: user_id=None, offset=None, limit=None):
     asset = get(id)
     response["meta"] = {"commenting_closed": asset["open_till"]>=datetime.datetime.utcnow()}
     return response
+
+
+def get_meta(id):
+    asset = get(id)
+    if asset is None:
+        raise NotFoundError(msg="Asset doesn't exist", data={'asset_id': id})
+    meta = {
+        'comments_count': get_comments_count(id),
+        'commenting_closed': asset["open_till"]>=datetime.datetime.utcnow()
+    }
+    return meta
+
+
+def get_assets_meta(ids):
+    assets = get_all(ids)
+    metas = {
+        asset['id']: {
+            'comments_count': get_comments_count(asset['id']),
+            'commenting_closed': asset['open_till']>=datetime.datetime.utcnow()
+        }
+        for asset in assets
+    }
+    return metas
