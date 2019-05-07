@@ -1,8 +1,11 @@
 import arrow
+import datetime
 
 from converge import settings
+from apphelpers.rest.hug import user_id
 from app.models import Asset, PendingComment, Comment, Commenter
 from app.libs import comment as commentlib
+from app.libs import commenter as commenterlib
 from app.libs import pending_comment as pendingcommentlib
 
 
@@ -118,7 +121,7 @@ def get_unfiltered_comments(id, parent=0, offset=None, limit=10, replies_limit=N
 def filter_inaccessible_comments(user_id, comments, limit, replies_limit=None):
     user_accessible_comments = []
     for comment in comments:
-        if comment['pending'] is False or comment['commenter'] == user_id:
+        if comment['pending'] is False or comment['commenter']['id'] == user_id:
             comment['replies'] = filter_inaccessible_comments(
                 user_id, comment.get('replies', []), replies_limit, replies_limit
             )
@@ -158,3 +161,18 @@ def get_pending_comments_count(id):
 
 def get_comments_count(id):
     return get_approved_comments_count(id)
+
+
+def get_comments_view(id, user_id: user_id=None, offset=None, limit=None):
+    response = {}
+    response["comments"] = get_comments(id, user_id, offset=offset, limit=limit)
+
+    user = commenterlib.get(user_id)
+    response["commenter"] = {
+        "username": user["username"],
+        "is_banned": not user["enabled"]
+    }
+
+    asset = get(id)
+    response["meta"] = {"commenting_closed": asset["open_till"]>=datetime.datetime.utcnow()}
+    return response
