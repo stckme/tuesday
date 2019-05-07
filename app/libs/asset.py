@@ -180,7 +180,7 @@ def get_comments_view(id, user_id: user_id=None, offset=None, limit=None):
     }
 
     asset = get(id)
-    response["meta"] = {"commenting_closed": asset["open_till"]<=datetime.datetime.utcnow()}
+    response["meta"] = {"commenting_closed": asset["open_till"] <= datetime.datetime.utcnow()}
     return response
 
 
@@ -190,7 +190,7 @@ def get_meta(id):
         raise NotFoundError(msg="Asset doesn't exist", data={'asset_id': id})
     meta = {
         'comments_count': get_comments_count(id),
-        'commenting_closed': asset["open_till"]<=datetime.datetime.utcnow()
+        'commenting_closed': asset["open_till"] <= datetime.datetime.utcnow()
     }
     return meta
 
@@ -200,7 +200,7 @@ def get_assets_meta(ids):
     metas = {
         asset['id']: {
             'comments_count': get_comments_count(asset['id']),
-            'commenting_closed': asset['open_till']<=datetime.datetime.utcnow()
+            'commenting_closed': asset['open_till'] <= datetime.datetime.utcnow()
         }
         for asset in assets
     }
