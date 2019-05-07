@@ -133,7 +133,7 @@ def filter_inaccessible_comments(user_id, comments, limit, replies_limit=None):
     return user_accessible_comments
 
 
-def get_comments(id, user_id=None, parent=0, offset=None, limit=None, replies_limit=None):
+def get_comments(id, user_id: user_id=None, parent=0, offset=None, limit=None, replies_limit=None):
     limit = limit if limit else settings.DEFAULT_COMMENTS_FETCH_LIMIT
     replies_limit = replies_limit if replies_limit else settings.DEFAULT_REPLIES_FETCH_LIMIT
 
@@ -144,7 +144,7 @@ def get_comments(id, user_id=None, parent=0, offset=None, limit=None, replies_li
     return filter_inaccessible_comments(user_id, comments, limit, replies_limit)
 
 
-def get_replies(parent, user_id=None, limit=None, offset=None):
+def get_replies(parent, user_id: user_id=None, limit=None, offset=None):
     limit = limit if limit else settings.DEFAULT_COMMENTS_FETCH_LIMIT
     replies = get_unfiltered_replies(parent=parent, limit=limit, offset=offset)
     return filter_inaccessible_comments(user_id, replies, limit, limit)
@@ -170,7 +170,7 @@ def get_comments_view(id, user_id: user_id=None, offset=None, limit=None):
     user = commenterlib.get(user_id)
     response["commenter"] = {
         "username": user["username"],
-        "is_banned": not user["enabled"]
+        "banned": not user["enabled"]
     }
 
     asset = get(id)
