@@ -2,7 +2,7 @@ import app.libs.debug as debughelpers
 import app.libs.asset_request as arlib
 import app.libs.asset as assetlib
 import app.libs.pending_comment as pclib
-import app.libs.approved_comment as aclib
+import app.libs.comment as commentlib
 import app.libs.comment_action_log as actionlog
 import apphelpers.sessions as sessionlib
 
@@ -24,7 +24,7 @@ def setup_routes(factory):
     factory.get('/assets/{id}/meta')(assetlib.get_meta)
     factory.get('/assets/meta')(assetlib.get_assets_meta)
 
-    factory.get('/comments/approved/{comment_id}')(aclib.get)
+    factory.get('/comments/{comment_id}')(commentlib.get)
 
     pc_handlers = (pclib.list_, pclib.create, None, pclib.get, None, None)
     factory.map_resource('/comments/pending/', handlers=pc_handlers)
