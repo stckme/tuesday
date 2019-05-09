@@ -23,6 +23,11 @@ def create(id, commenter: user_id, editors_pick, asset, content, ip_address, par
 
 
 def get(id):
+    comment = Comment.select().where(Comment.id == id).first()
+    return comment.to_dict() if comment else None
+
+
+def get_with_commenter(id):
     comment = Comment.select(
             Comment, *commenter_fields
         ).join(
