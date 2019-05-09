@@ -25,12 +25,13 @@ def create(id, commenter: user_id, editors_pick, asset, content, ip_address, par
 comment_common_fields = [Comment.id, Comment.editors_pick, Comment.asset,
                          Comment.content, Comment.parent, Comment.created, Comment.commenter]
 
-def get(id, fields=None):
+def get(id, fields=None, include=None):
+    include = ['commenter'] if include is None else []
     fields = fields or comment_common_fields
     comment = Comment.select().where(Comment.id == id).first()
     if comment:
         d = comment.to_dict()
-        if comment.commenter:
+        if 'commenter' in include:
             d['commenter'] = comment.commenter.to_dict(exclude=[Commenter.web, Commenter.bio])
         return d
 
@@ -62,7 +63,7 @@ def delete(id):
 
 
 def archive(id):
-    comment = get(id)
+    comment = get(id, include=[])
     delete(id)
     return archivedcommentlib.create(**comment)
 
