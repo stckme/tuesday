@@ -24,7 +24,7 @@ def setup_routes(factory):
     factory.get('/assets/{id}/meta')(assetlib.get_meta)
     factory.get('/assets/meta')(assetlib.get_assets_meta)
 
-    factory.get('/comments/{comment_id}')(commentlib.get)
+    factory.get('/comments/{id}')(commentlib.get)
 
     pc_handlers = (pclib.list_, pclib.create, None, pclib.get, None, None)
     factory.map_resource('/comments/pending/', handlers=pc_handlers)
