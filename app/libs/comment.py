@@ -23,8 +23,18 @@ def create(id, commenter: user_id, editors_pick, asset, content, ip_address, par
 
 
 def get(id):
-    comment = Comment.select().where(Comment.id == id).first()
-    return comment.to_dict() if comment else None
+    comment = Comment.select(
+            Comment, *commenter_fields
+        ).join(
+            Commenter
+        ).where(
+            Comment.id == id
+        ).first()
+    if comment:
+        commenter = comment.commenter.to_dict()
+        comment = comment.to_dict()
+        comment['commenter'] = commenter
+    return comment
 
 
 def list_(page=1, size=20):
