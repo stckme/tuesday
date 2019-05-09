@@ -27,6 +27,21 @@ def get(id):
     return comment.to_dict() if comment else None
 
 
+def get_with_commenter(id):
+    comment = Comment.select(
+            Comment, *commenter_fields
+        ).join(
+            Commenter
+        ).where(
+            Comment.id == id
+        ).first()
+    if comment:
+        commenter = comment.commenter.to_dict()
+        comment = comment.to_dict()
+        comment['commenter'] = commenter
+    return comment
+
+
 def list_(page=1, size=20):
     comments = Comment.select().order_by(Comment.created.desc()).paginate(page, size)
     return [comment.to_dict() for comment in comments]
