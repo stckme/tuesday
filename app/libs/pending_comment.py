@@ -22,6 +22,7 @@ def create(commenter: user_id, asset, content, editors_pick=False, ip_address=No
         parent=parent
     )
     return comment.id
+create.login_required = True
 
 
 def get(id):
