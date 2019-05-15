@@ -45,7 +45,7 @@ def test_accept():
     assert not pendingcommentlib.exists(1)
     assert commentlib.exists(1)
     comment = commentlib.get(1)
-    assert pending_comment.items() == comment.items()
+    assert pending_comment['id'] == comment['id']
 
     logs = commentactionloglib.list_by_comment(1, 1, 10)
     assert len(logs) == 1
@@ -78,7 +78,7 @@ def test_archive():
     assert not commentlib.exists(archived_id)
     assert archivedcommentlib.exists(archived_id)
     archived_comment = archivedcommentlib.get(archived_id)
-    assert archived_comment.items() == comment.items()
+    assert archived_comment['id'] == comment['id']
 
 
 def test_list_archived():
