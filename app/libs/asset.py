@@ -170,18 +170,18 @@ def get_comments_count(id):
 
 
 def get_comments_view(id, user_id: user_id=None, offset=None, limit=None):
-    response = {}
-    response["comments"] = get_comments(id, user_id, offset=offset, limit=limit)
+    view = {"comments": get_comments(id, user_id, offset=offset, limit=limit)}
 
-    user = commenterlib.get(user_id)
-    response["commenter"] = {
-        "username": user["username"],
-        "banned": not user["enabled"]
-    }
+    if user_id:  # to support anonymous view
+        user = commenterlib.get(user_id)
+        view["commenter"] = {
+            "username": user["username"],
+            "banned": not user["enabled"]
+        }
 
     asset = get(id)
-    response["meta"] = {"commenting_closed": asset["open_till"] <= datetime.datetime.utcnow()}
-    return response
+    view["meta"] = {"commenting_closed": asset["open_till"] <= datetime.datetime.utcnow()}
+    return view
 
 
 def get_meta(id):
