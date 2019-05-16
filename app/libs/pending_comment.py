@@ -86,16 +86,8 @@ def get_replies(parent, limit=None, offset=None):
     if offset is not None:
         where.append(PendingComment.id > offset)
 
-    comments = PendingComment.select(
-            PendingComment, *commenter_fields
-        ).join(
-            Commenter
-        ).where(
-            *where
-        ).order_by(
-            PendingComment.id.asc()
-        )
+    comments = PendingComment.select().where(*where).order_by(PendingComment.id.asc())
     if limit:
         comments = comments.limit(limit)
 
-    return [{**comment.to_dict(), "commenter": comment.commenter.to_dict()} for comment in comments]
+    return [comment.to_dict() for comment in comments]
