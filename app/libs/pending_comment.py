@@ -10,10 +10,13 @@ from app.libs import comment_action_log as commentactionloglib
 commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
-def create(commenter: user_id, asset, content, editors_pick=False, ip_address=None, parent=0):
-    if not commenterlib.exists(commenter):
-        commenterlib.create(id=commenter, name=user_name())
+def create(commenter_id: user_id, asset, content, editors_pick=False, ip_address=None, parent=0):
+    if not commenterlib.exists(commenter_id):
+        commenterlib.create(id=commenter_id, name=user_name())
+    commenter = commenterlib.get(commenter_id)
+    del(commenter['created'])
     comment = PendingComment.create(
+        commenter_id=commenter_id,
         commenter=commenter,
         editors_pick=editors_pick,
         asset=asset,

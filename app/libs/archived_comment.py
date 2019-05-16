@@ -1,12 +1,13 @@
 from app.models import ArchivedComment
 
 
-def create(id, commenter, editors_pick, asset, content, ip_address, parent, created):
+def create(id, commenter_id, commenter, editors_pick, asset, content, ip_address, parent, created):
     comment = ArchivedComment.create(
         id=id,
         commenter=commenter,
         editors_pick=editors_pick,
         asset=asset,
+        commenter_id=commenter_id,
         content=content,
         ip_address=ip_address,
         parent=parent,

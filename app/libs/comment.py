@@ -8,9 +8,10 @@ from app.libs import comment_action_log as commentactionloglib
 commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
-def create(id, commenter: user_id, editors_pick, asset, content, ip_address, parent, created):
+def create(id, commenter_id: user_id, commenter, editors_pick, asset, content, ip_address, parent, created):
     comment = Comment.create(
         id=id,
+        commenter_id=commenter_id,
         commenter=commenter,
         editors_pick=editors_pick,
         asset=asset,
@@ -25,15 +26,9 @@ def create(id, commenter: user_id, editors_pick, asset, content, ip_address, par
 comment_common_fields = [Comment.id, Comment.editors_pick, Comment.asset,
                          Comment.content, Comment.parent, Comment.created, Comment.commenter]
 
-def get(id, fields=None, include=None):
-    include = ['commenter'] if include is None else []
-    fields = fields or comment_common_fields
+def get(id):
     comment = Comment.select().where(Comment.id == id).first()
-    if comment:
-        d = comment.to_dict()
-        if 'commenter' in include:
-            d['commenter'] = comment.commenter.to_dict(exclude=[Commenter.web, Commenter.bio])
-        return d
+    return comment.to_dict() if comment else None
 
 
 def list_(page=1, size=20):
@@ -63,7 +58,7 @@ def delete(id):
 
 
 def archive(id):
-    comment = get(id, include=[])
+    comment = get(id)
     delete(id)
     return archivedcommentlib.create(**comment)
 

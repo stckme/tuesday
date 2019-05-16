@@ -61,7 +61,8 @@ class AssetRequest(CommonModel):
 
 
 class BaseComment(CommonModel):
-    commenter = ForeignKeyField(Commenter, index=True)
+    commenter = BinaryJSONField()
+    commenter_id = IntegerField(null=False)
     editors_pick = BooleanField(default=False, index=True)
     asset = ForeignKeyField(Asset, index=True)
     content = TextField()
