@@ -5,6 +5,9 @@ from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
 
+Model = Comment
+model_common_fields = ['id', 'editors_pick', 'Comment.asset', 'content',
+                         'parent', 'created', 'commenter']
 commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
@@ -23,12 +26,11 @@ def create(id, commenter_id: user_id, commenter, editors_pick, asset, content, i
     return comment.id
 
 
-comment_common_fields = [Comment.id, Comment.editors_pick, Comment.asset,
-                         Comment.content, Comment.parent, Comment.created, Comment.commenter]
-
-def get(id):
-    comment = Comment.select().where(Comment.id == id).first()
-    return comment.to_dict() if comment else None
+def get(id, fields=None):
+    fields = fields or model_common_fields
+    model_fields = [getattr(Model, field) for field in fields]
+    instance = Model.select(*model_fields).where(Model.id == id).first()
+    return instance.to_dict() if instance else None
 
 
 def list_(page=1, size=20):
