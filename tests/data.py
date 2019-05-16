@@ -32,7 +32,7 @@ test_new_publication_asset_request_id = sha1(bytes(url, 'utf8')).hexdigest()
 
 
 test_comment = dict(
-    commenter=1,
+    commenter_id=1,
     editors_pick=False,
     asset=test_asset_request_id,
     content="test comment",

@@ -1,10 +1,11 @@
 from app.models import RejectedComment
 
 
-def create(id, commenter, editors_pick, asset, content, ip_address, parent, created, note):
+def create(id, commenter_id, commenter, editors_pick, asset, content, ip_address, parent, created, note):
     comment = RejectedComment.create(
         id=id,
         commenter=commenter,
+        commenter_id=commenter_id,
         editors_pick=editors_pick,
         asset=asset,
         content=content,

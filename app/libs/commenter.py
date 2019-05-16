@@ -1,6 +1,10 @@
 from app.models import Commenter
 
 
+Model = Commenter
+model_common_fields = ['id', 'name', 'username', 'badges']
+
+
 def generate_username(name):
     base_username = ".".join(name.lower().split())
     username = base_username
@@ -22,9 +26,11 @@ def exists(id):
     return bool(Commenter.get_or_none(Commenter.id == id))
 
 
-def get(id):
-    commenter = Commenter.select().where(Commenter.id == id).first()
-    return commenter.to_dict() if commenter else None
+def get(id, fields=None):
+    fields = fields or model_common_fields
+    model_fields = [getattr(Model, field) for field in fields]
+    instance = Model.select(*model_fields).where(Model.id == id).first()
+    return instance.to_dict() if instance else None
 
 
 def get_by_username(username):
