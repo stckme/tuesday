@@ -6,7 +6,7 @@ from app.libs import comment_action_log as commentactionloglib
 
 
 Model = Comment
-model_common_fields = ['id', 'editors_pick', 'Comment.asset', 'content',
+model_common_fields = ['id', 'editors_pick', 'asset', 'content',
                          'parent', 'created', 'commenter']
 commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
@@ -60,7 +60,7 @@ def delete(id):
 
 
 def archive(id):
-    comment = get(id)
+    comment = get(id, model_common_fields+['created', 'commenter_id'])
     delete(id)
     return archivedcommentlib.create(**comment)
 
