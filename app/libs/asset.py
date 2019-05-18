@@ -157,7 +157,7 @@ def get_comments_view(id, user_id: user_id=None, offset=None, limit=None):
     view = {"comments": get_comments(id, user_id, offset=offset, limit=limit)}
 
     if user_id:  # to support anonymous view
-        user = commenterlib.get(user_id)
+        user = commenterlib.get_or_create(user_id)
         view["commenter"] = {
             "username": user["username"],
             "banned": not user["enabled"]

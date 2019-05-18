@@ -11,9 +11,7 @@ commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.
 
 
 def create(commenter_id: user_id, asset, content, editors_pick=False, ip_address=None, parent=0):
-    if not commenterlib.exists(commenter_id):
-        commenterlib.create(id=commenter_id, name=user_name())
-    commenter = commenterlib.get(commenter_id)
+    commenter = commenterlib.get_or_create(commenter_id)
     del(commenter['created'])
     comment = PendingComment.create(
         commenter_id=commenter_id,
