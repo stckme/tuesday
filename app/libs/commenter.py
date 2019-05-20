@@ -15,7 +15,7 @@ def generate_username(name):
     return username
 
 
-def create(id, name, bio="", web=None, username=None):
+def create(id, name, bio=None, web=None, username=None):
     if not username:
         username = generate_username(name)
     commenter = Commenter.create(id=id, username=username, name=name, bio=bio, web=web)
