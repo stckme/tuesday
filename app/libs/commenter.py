@@ -33,6 +33,14 @@ def get(id, fields=None):
     return instance.to_dict() if instance else None
 
 
+def get_or_create(id, fields=None, user_name=None):
+    commenter = get(id, fields)
+    if commenter is None:
+        create(id=id, name=user_name)
+        commenter = get(id, fields)
+    return commenter
+
+
 def get_by_username(username):
     commenter = Commenter.get_or_none(Commenter.username == username)
     return commenter.to_dict() if commenter else None
