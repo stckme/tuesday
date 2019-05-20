@@ -1,4 +1,4 @@
-from apphelpers.rest.hug import user_id, user_name
+from apphelpers.rest.hug import user_id
 
 from app.models import PendingComment, comment_actions, Commenter
 from app.libs import comment as commentlib
@@ -12,7 +12,6 @@ commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.
 
 def create(commenter_id: user_id, asset, content, editors_pick=False, ip_address=None, parent=0):
     commenter = commenterlib.get_or_create(commenter_id)
-    del(commenter['created'])
     comment = PendingComment.create(
         commenter_id=commenter_id,
         commenter=commenter,
@@ -23,7 +22,8 @@ def create(commenter_id: user_id, asset, content, editors_pick=False, ip_address
         parent=parent
     )
     return comment.id
-create.login_required = True
+create.roles_required = ['registered', 'subscriber', 'expired']
+create.roles_forbidden = ['unverified']
 
 
 def get(id):

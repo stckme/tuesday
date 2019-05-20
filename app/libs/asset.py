@@ -2,7 +2,7 @@ import arrow
 import datetime
 
 from converge import settings
-from apphelpers.rest.hug import user_id
+from apphelpers.rest.hug import user_id, user_name
 from apphelpers.errors import NotFoundError
 from app.models import Asset, PendingComment, Comment, Commenter
 from app.libs import comment as commentlib
@@ -153,11 +153,11 @@ def get_comments_count(id):
     return get_approved_comments_count(id)
 
 
-def get_comments_view(id, user_id: user_id=None, offset=None, limit=None):
+def get_comments_view(id, user_id: user_id=None, offset=None, limit=None, user_name: user_name=None):
     view = {"comments": get_comments(id, user_id, offset=offset, limit=limit)}
 
     if user_id:  # to support anonymous view
-        user = commenterlib.get_or_create(user_id)
+        user = commenterlib.get_or_create(user_id, user_name)
         view["commenter"] = {
             "username": user["username"],
             "banned": not user["enabled"]
