@@ -27,8 +27,8 @@ class Commenter(CommonModel):
     name = TextField()
     enabled = BooleanField(default=True)
     badges = ArrayField(default=[])
-    bio = TextField()
-    web = TextField()
+    bio = TextField(default='')
+    web = TextField(null=True)
     verified = BooleanField(default=False)
 
 

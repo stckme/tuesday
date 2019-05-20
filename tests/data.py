@@ -10,8 +10,7 @@ test_publication = dict(
 test_commenter = dict(
     id=1,
     name='test user',
-    bio='I am a tester',
-    web='publisher.test.in'
+    bio='I am a tester'
 )
 
 
