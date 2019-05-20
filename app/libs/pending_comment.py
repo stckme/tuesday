@@ -22,7 +22,6 @@ def create(commenter_id: user_id, asset, content, editors_pick=False, ip_address
         parent=parent
     )
     return comment.id
-create.roles_required = ['registered', 'subscriber', 'expired']
 create.roles_forbidden = ['unverified']
 
 
