@@ -172,13 +172,14 @@ def get_comments_view(id, user_id: user_id=None, offset=None, limit=None, user_n
 
 def get_meta(id):
     asset = get(id)
-    if asset is None:
-        raise NotFoundError(msg="Asset doesn't exist", data={'asset_id': id})
-    meta = {
-        'comments_count': get_comments_count(id),
-        'commenting_closed': asset["open_till"] <= datetime.datetime.utcnow()
-    }
+    meta = None
+    if asset is not None:
+        meta = {
+            'comments_count': get_comments_count(id),
+            'commenting_closed': asset["open_till"] <= datetime.datetime.utcnow()
+        }
     return meta
+get_meta.not_found_on_none = True
 
 
 def get_assets_meta(ids):
