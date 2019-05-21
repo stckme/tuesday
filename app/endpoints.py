@@ -27,6 +27,7 @@ def setup_routes(factory):
     factory.get('/assets/{id}/meta')(assetlib.get_meta)
     factory.get('/assets/meta')(assetlib.get_assets_meta)
 
+    factory.get('/comments/')(commentlib.list_)
     factory.get('/comments/{id}')(commentlib.get)
 
     actionlog_handlers = (None, actionlog.create, None, None, None, None)
@@ -40,11 +41,8 @@ def setup_routes(factory):
     factory.map_resource('/comments/pending/', handlers=pc_handlers)
 
     factory.post('/comments/pending/{id}/approve')(pclib.approve)
-    factory.get('/comments/approved')(commentlib.list_)
-    factory.get('/comments/editors-pick')(commentlib.list_editors_pick)
-    factory.post('/comments/{id}/editors-pick')(commentlib.mark_editors_pick)
 
     factory.post('/comments/pending/{id}/reject')(pclib.reject)
-    factory.get('/comments/rejected')(rclib.list_)
+    factory.get('/comments/rejected/')(rclib.list_)
 
     factory.post('/commenters/{id}/block')(commenterlib.block)

@@ -1,3 +1,5 @@
+import hug
+
 from apphelpers.rest.hug import user_id
 
 from app.models import Comment, comment_actions, Commenter
@@ -33,7 +35,7 @@ def get(id, fields=None):
     return instance.to_dict() if instance else None
 
 
-def list_(asset_id=None, editors_pick=None, page=1, size=20):
+def list_(asset_id=None, editors_pick: hug.types.boolean=False, page=1, size=20):
     comments = Comment.select().order_by(Comment.created.desc()).paginate(page, size)
     where = []
     if asset_id:
@@ -44,10 +46,6 @@ def list_(asset_id=None, editors_pick=None, page=1, size=20):
         comments = comments.where(*where)
     print(where)
     return [comment.to_dict() for comment in comments]
-
-
-def list_editors_pick(asset_id=None, page=1, size=20):
-    return list_(asset_id=asset_id, editors_pick=True, page=page, size=size)
 
 
 def update(id, mod_data):
@@ -87,7 +85,3 @@ def get_replies(parent, limit=None, offset=None):
         comments = comments.limit(limit)
 
     return [comment.to_dict() for comment in comments]
-
-
-def mark_editors_pick(id):
-    update(id, {'editors_pick': True})
