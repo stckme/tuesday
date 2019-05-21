@@ -55,3 +55,7 @@ def update(id, mod_data):
 
 def delete(id):
     Commenter.delete().where(Commenter.id == id).execute()
+
+
+def block(id):
+    update(id, {'enabled': False})

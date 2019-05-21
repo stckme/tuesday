@@ -22,8 +22,10 @@ def get(id):
     return comment.to_dict() if comment else None
 
 
-def list_(page=1, size=20):
+def list_(asset_id=None, page=1, size=20):
     comments = RejectedComment.select().order_by(RejectedComment.created.desc()).paginate(page, size)
+    if asset_id:
+        comments = comments.where(RejectedComment.asset == asset_id)
     return [comment.to_dict() for comment in comments]
 
 

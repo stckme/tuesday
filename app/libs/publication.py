@@ -1,4 +1,4 @@
-from app.models import Publication
+from app.models import Publication, Asset
 
 
 def create(name, domain):
@@ -30,3 +30,8 @@ def update(id, mod_data):
 
 def delete(id):
     Publication.delete().where(Publication.id == id).execute()
+
+
+def get_assets(id):
+    assets = Asset.select().where(Asset.publication==id).order_by(Asset.created.desc())
+    return [asset.to_dict() for asset in assets]
