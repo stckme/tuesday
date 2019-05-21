@@ -35,7 +35,7 @@ def get(id, fields=None):
     return instance.to_dict() if instance else None
 
 
-def list_(asset_id=None, editors_pick: hug.types.boolean=False, page=1, size=20):
+def list_(asset_id=None, editors_pick: hug.types.boolean=None, page=1, size=20):
     comments = Comment.select().order_by(Comment.created.desc()).paginate(page, size)
     where = []
     if asset_id:
