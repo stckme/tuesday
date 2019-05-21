@@ -22,7 +22,7 @@ def create(commenter_id: user_id, asset, content, editors_pick=False, ip_address
         parent=parent
     )
     return comment.id
-create.roles_forbidden = ['unverified']
+create.groups_forbidden = ['unverified']
 
 
 def get(id):
