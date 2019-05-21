@@ -30,8 +30,10 @@ def get(id):
     return pending_comment.to_dict() if pending_comment else None
 
 
-def list_(page=1, size=20):
+def list_(asset_id=None, page=1, size=20):
     comments = PendingComment.select().order_by(PendingComment.created).paginate(page, size)
+    if asset_id:
+        comments = comments.where(PendingComment.asset == asset_id)
     return [comment.to_dict() for comment in comments]
 
 

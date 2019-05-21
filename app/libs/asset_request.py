@@ -32,6 +32,11 @@ def get(id):
     return asset_request.to_dict() if asset_request else None
 
 
+def list_(page=1, size=20):
+    asset_requests = AssetRequest.select().order_by(AssetRequest.created).paginate(page, size)
+    return [asset_request.to_dict() for asset_request in asset_requests]
+
+
 def update(id, mod_data):
     updatables = ('url', 'requester')
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)

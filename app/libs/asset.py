@@ -44,6 +44,11 @@ def get_by_url(url):
     return Asset.get_or_none(Asset.url == url)
 
 
+def list_():
+    assets = Asset.select().order_by(Asset.created.desc())
+    return [asset.to_dict() for asset in assets]
+
+
 def get_pending_comments(id, parent=0, offset=None, limit=None):
     where = [PendingComment.asset == id, PendingComment.parent == parent]
     if offset is not None:
@@ -172,13 +177,11 @@ def get_comments_view(id, user_id: user_id=None, offset=None, limit=None, user_n
 
 def get_meta(id):
     asset = get(id)
-    meta = None
     if asset is not None:
-        meta = {
+        return {
             'comments_count': get_comments_count(id),
             'commenting_closed': asset["open_till"] <= datetime.datetime.utcnow()
         }
-    return meta
 get_meta.not_found_on_none = True
 
 
