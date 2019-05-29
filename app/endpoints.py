@@ -35,7 +35,8 @@ def setup_routes(factory):
     factory.get('/actionlog/comments/{comment_id}')(actionlog.list_by_comment)
 
     # Admin APIs
-    factory.get('/publications/<id>/assets')(publicationlib.get_assets)
+    factory.get('/publications/')(publicationlib.list_)
+    factory.get('/publications/{id}/assets')(publicationlib.get_assets)
 
     pc_handlers = (pclib.list_, pclib.create, None, pclib.get, None, None)
     factory.map_resource('/comments/pending/', handlers=pc_handlers)
