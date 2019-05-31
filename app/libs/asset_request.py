@@ -1,3 +1,5 @@
+import re
+import requests
 from hashlib import sha1
 from urllib.parse import urlsplit
 
@@ -7,6 +9,17 @@ from app.libs import publication as publicationlib
 from app.models import AssetRequest, asset_request_statuses
 
 
+def get_title_from_url(url):
+    try:
+        response = requests.get(url)
+        if response.ok:
+            raw_html = response.text
+            match = re.search('<title>(.*?)</title>', raw_html)
+            return match.group(1) if match else None
+    except requests.exceptions.ConnectionError:
+        pass
+
+
 def create(url, requester: user_id):
     domain = urlsplit(url).netloc
     publication = publicationlib.get_by_domain(domain)
@@ -14,12 +27,14 @@ def create(url, requester: user_id):
         publication_id = publicationlib.create(name=domain, domain=domain)
     else:
         publication_id = publication['id']
+    title = get_title_from_url(url) or url
     # asset ids are hashes generated from URLs. Idea is client doesn't need to
     # query server to find id for certain asset. Client can generate the id
     # itself from the asset url (provided it knows the hashing technique used)
     asset = AssetRequest.create(
         id=sha1(bytes(url, 'utf8')).hexdigest(),
         url=url,
+        title=title,
         publication=publication_id,
         requester=requester
     )
@@ -52,6 +67,7 @@ def approve(id, approver: user_id, open_till=None):
     assetlib.create_or_replace(
         id=id,
         url=asset_request['url'],
+        title=asset_request['title'],
         publication=asset_request['publication'],
         open_till=open_till
     )
