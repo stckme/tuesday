@@ -12,12 +12,13 @@ from app.models import AssetRequest, asset_request_statuses
 def get_title_from_url(url):
     try:
         response = requests.get(url)
+    except requests.exceptions.ConnectionError:
+        pass
+    else:
         if response.ok:
             raw_html = response.text
             match = re.search('<title>(.*?)</title>', raw_html)
             return match.group(1) if match else None
-    except requests.exceptions.ConnectionError:
-        pass
 
 
 def create(url, requester: user_id):
