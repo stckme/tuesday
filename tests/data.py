@@ -17,7 +17,8 @@ test_commenter = dict(
 url = 'http://publisher.example.test/1234'
 test_asset_request = dict(
     url=url,
-    requester=123
+    requester=123,
+    title="Test Asset Request"
 )
 test_asset_request_id = sha1(bytes(url, 'utf8')).hexdigest()
 
@@ -25,7 +26,8 @@ test_asset_request_id = sha1(bytes(url, 'utf8')).hexdigest()
 url = 'http://publication.example.com/234'
 test_new_publication_asset_request = dict(
     url=url,
-    requester=123
+    requester=123,
+    title="Test Asset"
 )
 test_new_publication_asset_request_id = sha1(bytes(url, 'utf8')).hexdigest()
 
