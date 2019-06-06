@@ -4,10 +4,10 @@ from urllib.parse import urlsplit
 from apphelpers.rest.hug import user_id
 from app.libs import asset as assetlib
 from app.libs import publication as publicationlib
-from app.models import AssetRequest, asset_request_statuses
+from app.models import AssetRequest, asset_request_statuses, moderation_policies
 
 
-def create(url, requester: user_id):
+def create(url, requester: user_id, moderation_policy=None):
     domain = urlsplit(url).netloc
     publication = publicationlib.get_by_domain(domain)
     if publication is None:
@@ -21,7 +21,8 @@ def create(url, requester: user_id):
         id=sha1(bytes(url, 'utf8')).hexdigest(),
         url=url,
         publication=publication_id,
-        requester=requester
+        requester=requester,
+        moderation_policy=moderation_policy or moderation_policies.default.value
     )
     return asset.id
 create.login_required = True
@@ -53,6 +54,7 @@ def approve(id, approver: user_id, open_till=None):
         id=id,
         url=asset_request['url'],
         publication=asset_request['publication'],
+        moderation_policy=asset_request['moderation_policy'],
         open_till=open_till
     )
 approve.login_required = True
