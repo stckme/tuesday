@@ -1,3 +1,5 @@
+import re
+import requests
 from hashlib import sha1
 from urllib.parse import urlsplit
 
@@ -7,7 +9,7 @@ from app.libs import publication as publicationlib
 from app.models import AssetRequest, asset_request_statuses, moderation_policies
 
 
-def create(url, requester: user_id):
+def create(url, title, requester: user_id):
     domain = urlsplit(url).netloc
     publication = publicationlib.get_by_domain(domain)
     if publication is None:
@@ -20,6 +22,7 @@ def create(url, requester: user_id):
     asset = AssetRequest.create(
         id=sha1(bytes(url, 'utf8')).hexdigest(),
         url=url,
+        title=title,
         publication=publication_id,
         requester=requester
     )
@@ -52,6 +55,7 @@ def approve(id, approver: user_id, open_till=None, moderation_policy=None):
     assetlib.create_or_replace(
         id=id,
         url=asset_request['url'],
+        title=asset_request['title'],
         publication=asset_request['publication'],
         moderation_policy=moderation_policy or moderation_policies.default.value,
         open_till=open_till
