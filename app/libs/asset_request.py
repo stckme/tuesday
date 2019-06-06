@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 from apphelpers.rest.hug import user_id
 from app.libs import asset as assetlib
 from app.libs import publication as publicationlib
-from app.models import AssetRequest, asset_request_statuses
+from app.models import AssetRequest, asset_request_statuses, moderation_policies
 
 
 def create(url, title, requester: user_id):
@@ -48,7 +48,7 @@ def update(id, mod_data):
     AssetRequest.update(**update_dict).where(AssetRequest.id == id).execute()
 
 
-def approve(id, approver: user_id, open_till=None):
+def approve(id, approver: user_id, open_till=None, moderation_policy=None):
     mod_data = {'approver': approver, 'status': asset_request_statuses.accepted.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
     asset_request = get(id)
@@ -57,6 +57,7 @@ def approve(id, approver: user_id, open_till=None):
         url=asset_request['url'],
         title=asset_request['title'],
         publication=asset_request['publication'],
+        moderation_policy=moderation_policy or moderation_policies.default.value,
         open_till=open_till
     )
 approve.login_required = True

@@ -13,7 +13,7 @@ from app.libs import pending_comment as pendingcommentlib
 commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
 
 
-def create_or_replace(id, url, title, publication, open_till=None):
+def create_or_replace(id, url, title, publication, moderation_policy, open_till=None):
     if open_till is None:
         open_till = arrow.utcnow().shift(days=settings.DEFAULT_ASSET_OPEN_DURATION).datetime
     asset = Asset.create(
@@ -21,7 +21,8 @@ def create_or_replace(id, url, title, publication, open_till=None):
         url=url,
         title=title,
         publication=publication,
-        open_till=open_till
+        open_till=open_till,
+        moderation_policy=moderation_policy
     )
     return asset.id
 
