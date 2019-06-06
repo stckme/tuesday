@@ -37,6 +37,12 @@ class Publication(CommonModel):
     domain = TextField(null=False)
 
 
+class moderation_policies(Enum):
+    default = 0
+    automatic = 1
+    manual = 2
+
+
 class asset_request_statuses(Enum):
     pending = 0
     accepted = 1
@@ -49,6 +55,7 @@ class Asset(CommonModel):
     url = TextField()
     publication = ForeignKeyField(Publication, null=True)
     open_till = DateTimeField()
+    moderation_policy = IntegerField(null=False, default=moderation_policies.default.value)
 
 
 class AssetRequest(CommonModel):
