@@ -40,7 +40,7 @@ class Publication(CommonModel):
 class moderation_policies(Enum):
     automatic = 0
     manual = 1
-    default = 3
+    default = 2
 
 
 class asset_request_statuses(Enum):
