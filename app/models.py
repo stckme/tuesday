@@ -38,9 +38,9 @@ class Publication(CommonModel):
 
 
 class moderation_policies(Enum):
-    automatic = 0
-    manual = 1
-    default = 2
+    default = 0
+    automatic = 1
+    manual = 2
 
 
 class asset_request_statuses(Enum):
@@ -65,7 +65,6 @@ class AssetRequest(CommonModel):
     requester = IntegerField(null=True)
     approver = IntegerField(null=True)
     status = IntegerField(null=False, default=asset_request_statuses.pending.value)
-    moderation_policy = IntegerField(null=False, default=moderation_policies.default.value)
 
 
 class BaseComment(CommonModel):

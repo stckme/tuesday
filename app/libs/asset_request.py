@@ -7,7 +7,7 @@ from app.libs import publication as publicationlib
 from app.models import AssetRequest, asset_request_statuses, moderation_policies
 
 
-def create(url, requester: user_id, moderation_policy=None):
+def create(url, requester: user_id):
     domain = urlsplit(url).netloc
     publication = publicationlib.get_by_domain(domain)
     if publication is None:
@@ -21,8 +21,7 @@ def create(url, requester: user_id, moderation_policy=None):
         id=sha1(bytes(url, 'utf8')).hexdigest(),
         url=url,
         publication=publication_id,
-        requester=requester,
-        moderation_policy=moderation_policy or moderation_policies.default.value
+        requester=requester
     )
     return asset.id
 create.login_required = True
@@ -46,7 +45,7 @@ def update(id, mod_data):
     AssetRequest.update(**update_dict).where(AssetRequest.id == id).execute()
 
 
-def approve(id, approver: user_id, open_till=None):
+def approve(id, approver: user_id, open_till=None, moderation_policy=None):
     mod_data = {'approver': approver, 'status': asset_request_statuses.accepted.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
     asset_request = get(id)
@@ -54,7 +53,7 @@ def approve(id, approver: user_id, open_till=None):
         id=id,
         url=asset_request['url'],
         publication=asset_request['publication'],
-        moderation_policy=asset_request['moderation_policy'],
+        moderation_policy=moderation_policy or moderation_policies.default.value,
         open_till=open_till
     )
 approve.login_required = True
