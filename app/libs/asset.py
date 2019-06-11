@@ -4,13 +4,13 @@ import datetime
 from converge import settings
 from apphelpers.rest.hug import user_id, user_name
 from apphelpers.errors import NotFoundError
-from app.models import Asset, PendingComment, Comment, Commenter
+from app.models import Asset, PendingComment, Comment, User
 from app.libs import comment as commentlib
 from app.libs import commenter as commenterlib
 from app.libs import pending_comment as pendingcommentlib
 
 
-commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
+commenter_fields = [User.id, User.username, User.name, User.badges]
 
 
 def create_or_replace(id, url, title, publication, moderation_policy, open_till=None):
