@@ -1,13 +1,13 @@
 from apphelpers.rest.hug import user_id
 
-from app.models import PendingComment, comment_actions, Commenter
+from app.models import PendingComment, comment_actions, User
 from app.libs import comment as commentlib
 from app.libs import commenter as commenterlib
 from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
 
-commenter_fields = [Commenter.id, Commenter.username, Commenter.name, Commenter.badges]
+commenter_fields = [User.id, User.username, User.name, User.badges]
 
 
 def create(commenter_id: user_id, asset, content, editors_pick=False, ip_address=None, parent=0):

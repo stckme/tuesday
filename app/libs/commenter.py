@@ -1,7 +1,7 @@
-from app.models import Commenter
+from app.models import User
 
 
-Model = Commenter
+Model = User
 model_common_fields = ['id', 'name', 'username', 'badges']
 
 
@@ -18,12 +18,12 @@ def generate_username(name):
 def create(id, name, bio=None, web=None, username=None):
     if not username:
         username = generate_username(name)
-    commenter = Commenter.create(id=id, username=username, name=name, bio=bio, web=web)
+    commenter = User.create(id=id, username=username, name=name, bio=bio, web=web)
     return commenter.id
 
 
 def exists(id):
-    return bool(Commenter.get_or_none(Commenter.id == id))
+    return bool(User.get_or_none(User.id == id))
 
 
 def get(id, fields=None):
@@ -42,7 +42,7 @@ def get_or_create(id, fields=None, user_name=None):
 
 
 def get_by_username(username):
-    commenter = Commenter.get_or_none(Commenter.username == username)
+    commenter = User.get_or_none(User.username == username)
     return commenter.to_dict() if commenter else None
 
 
@@ -50,11 +50,11 @@ def update(id, mod_data):
     updatables = ('uid', 'username', 'name', 'enabled', 'badges', 'bio', 'web', 'verified')
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
 
-    Commenter.update(**update_dict).where(Commenter.id == id).execute()
+    User.update(**update_dict).where(User.id == id).execute()
 
 
 def delete(id):
-    Commenter.delete().where(Commenter.id == id).execute()
+    User.delete().where(User.id == id).execute()
 
 
 def block(id):
