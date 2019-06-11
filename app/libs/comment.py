@@ -35,7 +35,7 @@ def get(id, fields=None):
     return instance.to_dict() if instance else None
 
 
-def list_(asset_id=None, editors_pick: hug.types.boolean=None, page=1, size=20):
+def list_(asset_id=None, editors_pick: hug.types.smart_boolean=None, page=1, size=20):
     comments = Comment.select().order_by(Comment.created.desc()).paginate(page, size)
     where = []
     if asset_id:
@@ -44,7 +44,6 @@ def list_(asset_id=None, editors_pick: hug.types.boolean=None, page=1, size=20):
         where.append(Comment.editors_pick == editors_pick)
     if where:
         comments = comments.where(*where)
-    print(where)
     return [comment.to_dict() for comment in comments]
 
 
