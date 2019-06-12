@@ -120,6 +120,7 @@ class comment_actions(Enum):
     approved = 0
     rejected = 1
     picked = 2
+    reverted = 3
 
 
 class CommentActionLog(CommonModel):
