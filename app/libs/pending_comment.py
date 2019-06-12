@@ -1,6 +1,6 @@
 from apphelpers.rest.hug import user_id
 
-from app.models import PendingComment, comment_actions, User
+from app.models import PendingComment, comment_actions, User, groups
 from app.libs import comment as commentlib
 from app.libs import commenter as commenterlib
 from app.libs import rejected_comment as rejectedcommentlib
@@ -67,6 +67,7 @@ def approve(id, actor: user_id=0):
         actor=actor
     )
     return commentlib.create(**pending_comment)
+approve.groups_required = [groups.moderator]
 
 
 def reject(id, note='', actor: user_id=0):

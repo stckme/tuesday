@@ -33,6 +33,11 @@ class User(CommonModel):
     verified = BooleanField(default=False)
 
 
+class groups(Enum):
+    admin = 10
+    moderator = 11
+
+
 class Publication(CommonModel):
     name = TextField(null=False)
     domain = TextField(null=False)
