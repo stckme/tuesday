@@ -45,5 +45,6 @@ def setup_routes(factory):
 
     factory.post('/comments/pending/{id}/reject')(pclib.reject)
     factory.get('/comments/rejected/')(rclib.list_)
+    factory.post('/comments/rejected/{id}/revert')(rclib.revert)
 
     factory.post('/commenters/{id}/block')(commenterlib.block)

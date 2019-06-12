@@ -51,4 +51,5 @@ def revert(id, actor: user_id=0):
         actor=actor
     )
     del(rejected_comment['note'])
+    del(rejected_comment['commenter'])
     return pendingcommentlib.create(**rejected_comment)

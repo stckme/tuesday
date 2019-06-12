@@ -10,9 +10,11 @@ from app.libs import comment_action_log as commentactionloglib
 commenter_fields = [User.id, User.username, User.name, User.badges]
 
 
-def create(commenter_id: user_id, asset, content, editors_pick=False, ip_address=None, parent=0):
+def create(
+        commenter_id: user_id, asset, content, editors_pick=False, ip_address=None,
+        parent=0, id=None, created=None):
     commenter = commenterlib.get_or_create(commenter_id)
-    comment = PendingComment.create(
+    data = dict(
         commenter_id=commenter_id,
         commenter=commenter,
         editors_pick=editors_pick,
@@ -21,6 +23,11 @@ def create(commenter_id: user_id, asset, content, editors_pick=False, ip_address
         ip_address=ip_address,
         parent=parent
     )
+    if id:
+        data['id'] = id
+    if created:
+        data['created'] = created
+    comment = PendingComment.create(**data)
     return comment.id
 create.groups_forbidden = ['unverified']
 
