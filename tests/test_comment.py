@@ -125,6 +125,12 @@ def test_reject():
     assert len(logs) == 4
     assert logs[0]["action"] == comment_actions.rejected.value
 
+    reverted_comment_id = rejectedcommentlib.revert(rejected_id)
+    assert not rejectedcommentlib.exists(reverted_comment_id)
+    assert pendingcommentlib.exists(reverted_comment_id)
+
+    rejected_id = pendingcommentlib.reject(pending_comment_id, note)
+
 
 def test_list_rejected():
     assert len(rejectedcommentlib.list_()) == 1
