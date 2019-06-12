@@ -58,24 +58,24 @@ def update(id, mod_data):
         )
 
 
-def approve(id):
+def approve(id, actor: user_id=0):
     pending_comment = get(id)
     delete(id)
     commentactionloglib.create(
         comment=id,
         action=comment_actions.approved.value,
-        actor=0
+        actor=actor
     )
     return commentlib.create(**pending_comment)
 
 
-def reject(id, note=''):
+def reject(id, note='', actor: user_id=0):
     pending_comment = get(id)
     delete(id)
     commentactionloglib.create(
         comment=id,
         action=comment_actions.rejected.value,
-        actor=0
+        actor=actor
     )
     return rejectedcommentlib.create(note=note, **pending_comment)
 
