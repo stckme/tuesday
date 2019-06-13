@@ -53,7 +53,7 @@ def delete(id):
     PendingComment.delete().where(PendingComment.id == id).execute()
 
 
-def update(id, mod_data):
+def update(id, mod_data, actor: user_id=0):
     updatables = ('editors_pick', 'content')
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
     PendingComment.update(**update_dict).where(PendingComment.id == id).execute()
@@ -61,7 +61,7 @@ def update(id, mod_data):
         commentactionloglib.create(
             comment=id,
             action=comment_actions.picked.value,
-            actor=0
+            actor=actor or 0
         )
 
 
@@ -71,7 +71,7 @@ def approve(id, actor: user_id=0):
     commentactionloglib.create(
         comment=id,
         action=comment_actions.approved.value,
-        actor=actor
+        actor=actor or 0
     )
     return commentlib.create(**pending_comment)
 
@@ -82,7 +82,7 @@ def reject(id, note='', actor: user_id=0):
     commentactionloglib.create(
         comment=id,
         action=comment_actions.rejected.value,
-        actor=actor
+        actor=actor or 0
     )
     return rejectedcommentlib.create(note=note, **pending_comment)
 

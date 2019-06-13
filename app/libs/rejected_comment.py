@@ -48,7 +48,7 @@ def revert(id, actor: user_id=0):
     commentactionloglib.create(
         comment=id,
         action=comment_actions.reverted.value,
-        actor=actor
+        actor=actor or 0
     )
     del(rejected_comment['note'])
     del(rejected_comment['commenter'])

@@ -55,7 +55,7 @@ def update(id, mod_data, actor: user_id=0):
         commentactionloglib.create(
             comment=id,
             action=comment_actions.picked.value,
-            actor=actor
+            actor=actor or 0
         )
 
 
