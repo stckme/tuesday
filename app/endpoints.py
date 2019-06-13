@@ -27,8 +27,8 @@ def setup_routes(factory):
     factory.get('/assets/{id}/meta')(assetlib.get_meta)
     factory.get('/assets/meta')(assetlib.get_assets_meta)
 
-    factory.get('/comments/')(commentlib.list_)
-    factory.get('/comments/{id}')(commentlib.get)
+    comment_handlers = (commentlib.list_, None, None, commentlib.get, commentlib.update, None)
+    factory.map_resource('/comments/', handlers=comment_handlers)
 
     actionlog_handlers = (None, actionlog.create, None, None, None, None)
     factory.map_resource('/actionlog/comments/', handlers=actionlog_handlers)
