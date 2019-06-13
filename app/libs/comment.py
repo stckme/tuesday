@@ -47,7 +47,7 @@ def list_(asset_id=None, editors_pick: hug.types.smart_boolean=None, page=1, siz
     return [comment.to_dict() for comment in comments]
 
 
-def update(id, mod_data, actor: user_id=0):
+def update(id, actor: user_id=0, **mod_data):
     updatables = ('editors_pick',)
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
     Comment.update(**update_dict).where(Comment.id == id).execute()

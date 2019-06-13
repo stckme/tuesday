@@ -53,7 +53,7 @@ def delete(id):
     PendingComment.delete().where(PendingComment.id == id).execute()
 
 
-def update(id, mod_data, actor: user_id=0):
+def update(id, actor: user_id=0, **mod_data):
     updatables = ('editors_pick', 'content')
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
     PendingComment.update(**update_dict).where(PendingComment.id == id).execute()

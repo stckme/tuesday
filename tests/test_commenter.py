@@ -32,7 +32,7 @@ def test_generate_username():
 
 def test_update():
     mod_data = {"bio": "new_bio"}
-    commenterlib.update(state.commenter_id, mod_data)
+    commenterlib.update(state.commenter_id, **mod_data)
     commenter = commenterlib.get(state.commenter_id, ["id", "bio"])
     assert commenter["id"] == state.commenter_id
     assert commenter["bio"] == mod_data["bio"]
