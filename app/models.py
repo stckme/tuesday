@@ -1,5 +1,5 @@
 from enum import Enum
-
+from playhouse.hybrid import hybrid_property
 from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 from apphelpers.db.peewee import create_pgdb_pool, create_base_model, created, dbtransaction
@@ -58,6 +58,18 @@ class Asset(CommonModel):
     publication = ForeignKeyField(Publication, null=True)
     open_till = DateTimeField()
     moderation_policy = IntegerField(null=False, default=moderation_policies.default.value)
+
+    @hybrid_property
+    def pending_comments_count(self):
+        return PendingComment.select().where(PendingComment.asset==self.id).count()
+
+    @hybrid_property
+    def comments_count(self):
+        return Comment.select().where(Comment.asset==self.id).count()
+
+    @hybrid_property
+    def rejected_comments_count(self):
+        return RejectedComment.select().where(RejectedComment.asset==self.id).count()
 
 
 class AssetRequest(CommonModel):
