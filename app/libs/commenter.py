@@ -46,7 +46,7 @@ def get_by_username(username):
     return commenter.to_dict() if commenter else None
 
 
-def update(id, mod_data):
+def update(id, **mod_data):
     updatables = ('uid', 'username', 'name', 'enabled', 'badges', 'bio', 'web', 'verified')
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
 
@@ -58,4 +58,4 @@ def delete(id):
 
 
 def block(id):
-    update(id, {'enabled': False})
+    update(id, enabled=False)

@@ -59,7 +59,7 @@ def test_list_accepted():
 
 def test_update_accepted():
     comment = commentlib.get(1)
-    commentlib.update(1, {'editors_pick': True})
+    commentlib.update(1, editors_pick=True)
     updated_comment = commentlib.get(1)
     assert comment['editors_pick'] != updated_comment['editors_pick']
 
@@ -91,7 +91,8 @@ def test_update_pending():
     comment = pendingcommentlib.get(pending_comment_id)
     pendingcommentlib.update(
         pending_comment_id,
-        {'content': 'updated content', 'editors_pick': True}
+        content='updated content',
+        editors_pick=True
     )
     updated_comment = pendingcommentlib.get(pending_comment_id)
     assert comment['content'] != updated_comment['content']
