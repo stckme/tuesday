@@ -23,6 +23,7 @@ def setup_routes(factory):
     factory.map_resource('/assets/', handlers=asset_handlers)
     factory.get('/assets/{id}/comments/count')(assetlib.get_comments_count)
     factory.get('/assets/{id}/comments')(assetlib.get_comments_view)
+    factory.get('/assets/{id}/comments/{comment_id}')(assetlib.get_comment_view)
     factory.get('/assets/{id}/replies')(assetlib.get_replies)
     factory.get('/assets/{id}/meta')(assetlib.get_meta)
     factory.get('/assets/meta')(assetlib.get_assets_meta)
