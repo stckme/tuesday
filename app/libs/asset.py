@@ -198,3 +198,21 @@ def get_assets_meta(ids):
         for asset in assets
     }
     return metas
+
+
+def get_comment_view(id, comment_id, user_id: user_id=None):
+    view = {"comment": commentlib.get(comment_id)}
+
+    if user_id:  # to support anonymous view
+        user = commenterlib.get_or_create(
+            user_id, fields=['username', 'enabled', 'name'], user_name=user_name
+        )
+        view["commenter"] = {
+            "username": user["username"],
+            "banned": not user["enabled"],
+            "name": user["name"]
+        }
+
+    asset = get(id)
+    view["meta"] = {"commenting_closed": asset["open_till"] <= datetime.datetime.utcnow()}
+    return view
