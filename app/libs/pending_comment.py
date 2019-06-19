@@ -1,13 +1,20 @@
 from apphelpers.rest.hug import user_id
 
-from app.models import PendingComment, comment_actions, User, groups
+from app.models import PendingComment, comment_actions, User, groups, moderation_policies
 from app.libs import comment as commentlib
 from app.libs import commenter as commenterlib
 from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
+from converge import settings
 
 
 commenter_fields = [User.id, User.username, User.name, User.badges]
+
+
+def should_approve():
+    if settings.MODERATION_POLICY == moderation_policies.automatic.value:
+        return True
+    return False
 
 
 def create(
@@ -28,6 +35,8 @@ def create(
     if created:
         data['created'] = created
     comment = PendingComment.create(**data)
+    if should_approve():
+        approve(comment.id)
     return comment.id
 create.groups_forbidden = ['unverified']
 

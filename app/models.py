@@ -36,6 +36,7 @@ class User(CommonModel):
 class groups(Enum):
     admin = '10'
     moderator = '11'
+    requester = '12'
 
 
 class Publication(CommonModel):
