@@ -23,9 +23,10 @@ def test_suite_setup():
 
 
 def test_create():
-    pending_comment_id = pendingcommentlib.create(**test_comment)
-    assert pending_comment_id == 1
-    pending_comment = pendingcommentlib.get(pending_comment_id)
+    response = pendingcommentlib.create(**test_comment)
+    pending_commnet_id = response['id']
+    assert pending_commnet_id == 1
+    pending_comment = pendingcommentlib.get(pending_commnet_id)
     assert pending_comment != None
 
 
@@ -87,7 +88,8 @@ def test_list_archived():
 
 
 def test_update_pending():
-    pending_comment_id = pendingcommentlib.create(**test_comment)
+    response = pendingcommentlib.create(**test_comment)
+    pending_comment_id = response['id']
     comment = pendingcommentlib.get(pending_comment_id)
     pendingcommentlib.update(
         pending_comment_id,
@@ -126,7 +128,9 @@ def test_reject():
     assert len(logs) == 4
     assert logs[0]["action"] == comment_actions.rejected.value
 
-    reverted_comment_id = rejectedcommentlib.revert(rejected_id)
+    response = rejectedcommentlib.revert(rejected_id)
+    reverted_comment_id = response['id']
+
     assert not rejectedcommentlib.exists(reverted_comment_id)
     assert pendingcommentlib.exists(reverted_comment_id)
 

@@ -76,6 +76,12 @@ class AssetRequest(CommonModel):
     status = IntegerField(null=False, default=asset_request_statuses.pending.value)
 
 
+class comment_statuses(Enum):
+    pending = 0
+    approved = 1
+    rejected = 2
+
+
 class BaseComment(CommonModel):
     commenter = BinaryJSONField()
     commenter_id = IntegerField(null=False)

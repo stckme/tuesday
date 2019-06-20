@@ -1,6 +1,7 @@
 from apphelpers.rest.hug import user_id
 
-from app.models import PendingComment, comment_actions, User, groups, moderation_policies
+from app.models import PendingComment, comment_actions, User, groups
+from app.models import comment_statuses, moderation_policies
 from app.libs import comment as commentlib
 from app.libs import commenter as commenterlib
 from app.libs import rejected_comment as rejectedcommentlib
@@ -35,9 +36,11 @@ def create(
     if created:
         data['created'] = created
     comment = PendingComment.create(**data)
+    status = comment_statuses.pending.value
     if should_approve():
+        status = comment_statuses.approved.value
         approve(comment.id)
-    return comment.id
+    return {'id': comment.id, 'status': status}
 create.groups_forbidden = ['unverified']
 
 
