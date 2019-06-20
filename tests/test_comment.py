@@ -24,9 +24,9 @@ def test_suite_setup():
 
 def test_create():
     response = pendingcommentlib.create(**test_comment)
-    pending_commnet_id = response['id']
-    assert pending_commnet_id == 1
-    pending_comment = pendingcommentlib.get(pending_commnet_id)
+    pending_comment_id = response['id']
+    assert pending_comment_id == 1
+    pending_comment = pendingcommentlib.get(pending_comment_id)
     assert pending_comment != None
 
 
