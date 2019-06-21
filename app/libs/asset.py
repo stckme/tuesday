@@ -48,7 +48,15 @@ def get_by_url(url):
 
 def list_():
     assets = Asset.select().order_by(Asset.created.desc())
-    return [asset.to_dict() for asset in assets]
+    return [
+        {
+            'comments_count': asset.comments_count,
+            'pending_comments_count': asset.pending_comments_count,
+            'rejected_comments_count': asset.rejected_comments_count,
+            **asset.to_dict()
+        }
+        for asset in assets
+    ]
 
 
 def get_pending_comments(id, parent=0, offset=None, limit=None):
