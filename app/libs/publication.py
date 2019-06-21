@@ -9,6 +9,7 @@ def create(name, domain):
 def get(id):
     publication = Publication.select().where(Publication.id == id).first()
     return publication.to_dict() if publication else None
+get.groups_required = [groups.moderator.value, groups.admin.value]
 
 
 def get_by_domain(domain):

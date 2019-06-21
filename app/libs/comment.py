@@ -2,7 +2,7 @@ import hug
 
 from apphelpers.rest.hug import user_id
 
-from app.models import Comment, comment_actions, User
+from app.models import Comment, comment_actions, User, groups
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
@@ -57,6 +57,7 @@ def update(id, actor: user_id=0, **mod_data):
             action=comment_actions.picked.value,
             actor=actor or 0
         )
+update.groups_required = [groups.moderator.value, groups.admin.value]
 
 
 def exists(id):
