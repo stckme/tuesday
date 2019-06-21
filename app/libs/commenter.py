@@ -1,4 +1,4 @@
-from app.models import User
+from app.models import User, groups
 
 
 Model = User
@@ -59,3 +59,4 @@ def delete(id):
 
 def block(id):
     update(id, enabled=False)
+block.groups_required = [groups.moderator.value, groups.admin.value]
