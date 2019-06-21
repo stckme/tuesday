@@ -1,4 +1,4 @@
-from app.models import Publication, Asset
+from app.models import Publication, Asset, groups
 
 
 def create(name, domain):
@@ -26,12 +26,23 @@ def update(id, mod_data):
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
 
     Publication.update(**update_dict).where(Publication.id == id).execute()
+update.groups_required = [groups.admin.value]
 
 
 def delete(id):
     Publication.delete().where(Publication.id == id).execute()
+delete.groups_required = [groups.admin.value]
 
 
 def get_assets(id):
     assets = Asset.select().where(Asset.publication==id).order_by(Asset.created.desc())
-    return [asset.to_dict() for asset in assets]
+    return [
+        {
+            'comments_count': asset.comments_count,
+            'pending_comments_count': asset.pending_comments_count,
+            'rejected_comments_count': asset.rejected_comments_count,
+            **asset.to_dict()
+        }
+        for asset in assets
+    ]
+get_assets.groups_required = [groups.moderator.value, groups.admin.value]
