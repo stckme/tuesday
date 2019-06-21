@@ -1,8 +1,10 @@
-from app.models import User
+from app.models import User, groups
+from app.libs import sso
 
 
 Model = User
 model_common_fields = ['id', 'name', 'username', 'badges']
+user_groups_list = [group.value for group in groups]
 
 
 def generate_username(name):
@@ -47,10 +49,12 @@ def get_by_username(username):
 
 
 def update(id, **mod_data):
-    updatables = ('uid', 'username', 'name', 'enabled', 'badges', 'bio', 'web', 'verified')
+    updatables = ('uid', 'username', 'name', 'enabled', 'badges', 'bio', 'web', 'verified', 'groups')
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
 
     User.update(**update_dict).where(User.id == id).execute()
+    if groups in mod_data:
+        sso.update_user_groups(id, mod_data['groups'])
 
 
 def delete(id):
