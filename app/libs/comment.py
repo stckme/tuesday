@@ -57,7 +57,7 @@ def update(id, actor: user_id=0, **mod_data):
             action=comment_actions.picked.value,
             actor=actor or 0
         )
-update.groups_required = [groups.moderator.value, groups.admin.value]
+update.groups_required = [groups.moderator.value]
 
 
 def exists(id):
