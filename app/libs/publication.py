@@ -9,7 +9,6 @@ def create(name, domain):
 def get(id):
     publication = Publication.select().where(Publication.id == id).first()
     return publication.to_dict() if publication else None
-get.groups_required = [groups.moderator.value, groups.admin.value]
 
 
 def get_by_domain(domain):
@@ -20,6 +19,7 @@ def get_by_domain(domain):
 def list_():
     publications = Publication.select().execute()
     return [publication.to_dict() for publication in publications]
+list_.groups_required = [groups.moderator.value]
 
 
 def update(id, mod_data):
@@ -27,12 +27,12 @@ def update(id, mod_data):
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
 
     Publication.update(**update_dict).where(Publication.id == id).execute()
-update.groups_required = [groups.admin.value]
+update.groups_required = [groups.community_manager.value]
 
 
 def delete(id):
     Publication.delete().where(Publication.id == id).execute()
-delete.groups_required = [groups.admin.value]
+delete.groups_required = [groups.community_manager.value]
 
 
 def get_assets(id):
@@ -46,4 +46,4 @@ def get_assets(id):
         }
         for asset in assets
     ]
-get_assets.groups_required = [groups.moderator.value, groups.admin.value]
+get_assets.groups_required = [groups.moderator.value]

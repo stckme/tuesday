@@ -35,7 +35,7 @@ class User(CommonModel):
 
 
 class groups(Enum):
-    admin = '10'
+    community_manager = '10'
     moderator = '11'
     requester = '12'
 

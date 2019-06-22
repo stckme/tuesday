@@ -86,7 +86,7 @@ def approve(id, actor: user_id=0):
         actor=actor or 0
     )
     return commentlib.create(**pending_comment)
-approve.groups_required = [groups.moderator.value, groups.admin.value]
+approve.groups_required = [groups.moderator.value]
 
 
 def reject(id, note='', actor: user_id=0):
@@ -98,7 +98,7 @@ def reject(id, note='', actor: user_id=0):
         actor=actor or 0
     )
     return rejectedcommentlib.create(note=note, **pending_comment)
-reject.groups_required = [groups.moderator.value, groups.admin.value]
+reject.groups_required = [groups.moderator.value]
 
 
 def get_replies(parent, limit=None, offset=None):

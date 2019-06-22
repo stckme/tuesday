@@ -27,17 +27,19 @@ def create(url, title, requester: user_id):
         requester=requester
     )
     return asset.id
-create.login_required = True
+create.groups_required = [groups.requester.value]
 
 
 def get(id):
     asset_request = AssetRequest.select().where(AssetRequest.id == id).first()
     return asset_request.to_dict() if asset_request else None
+get.groups_required = [groups.moderator.value]
 
 
 def list_(page=1, size=20):
     asset_requests = AssetRequest.select().order_by(AssetRequest.created).paginate(page, size)
     return [asset_request.to_dict() for asset_request in asset_requests]
+list_.groups_required = [groups.moderator.value]
 
 
 def update(id, mod_data):
@@ -46,6 +48,7 @@ def update(id, mod_data):
 
     update_dict['status'] = asset_request_statuses.pending.value
     AssetRequest.update(**update_dict).where(AssetRequest.id == id).execute()
+update.groups_required = [groups.moderator.value]
 
 
 def approve(id, approver: user_id, open_till=None, moderation_policy=None):
@@ -60,13 +63,13 @@ def approve(id, approver: user_id, open_till=None, moderation_policy=None):
         moderation_policy=moderation_policy or moderation_policies.default.value,
         open_till=open_till
     )
-approve.groups_required = [groups.moderator.value, groups.admin.value]
+approve.groups_required = [groups.moderator.value]
 
 
 def reject(id, approver):
     mod_data = {'approver': approver, 'status': asset_request_statuses.rejected.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
-reject.groups_required = [groups.moderator.value, groups.admin.value]
+reject.groups_required = [groups.moderator.value]
 
 
 def cancel(id, approver):
@@ -75,4 +78,4 @@ def cancel(id, approver):
         raise Exception('not possible')
     mod_data = {'approver': approver, 'status': asset_request_statuses.cancelled.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
-cancel.groups_required = [groups.moderator.value, groups.admin.value]
+cancel.groups_required = [groups.moderator.value, groups.requester.value]
