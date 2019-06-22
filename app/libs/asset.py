@@ -4,7 +4,7 @@ import datetime
 from converge import settings
 from apphelpers.rest.hug import user_id, user_name
 from apphelpers.errors import NotFoundError
-from app.models import Asset, PendingComment, Comment, User
+from app.models import Asset, PendingComment, Comment, User, groups
 from app.libs import comment as commentlib
 from app.libs import commenter as commenterlib
 from app.libs import pending_comment as pendingcommentlib
@@ -48,7 +48,16 @@ def get_by_url(url):
 
 def list_():
     assets = Asset.select().order_by(Asset.created.desc())
-    return [asset.to_dict() for asset in assets]
+    return [
+        {
+            'comments_count': asset.comments_count,
+            'pending_comments_count': asset.pending_comments_count,
+            'rejected_comments_count': asset.rejected_comments_count,
+            **asset.to_dict()
+        }
+        for asset in assets
+    ]
+list_.groups_required = [groups.moderator.value, groups.admin.value]
 
 
 def get_pending_comments(id, parent=0, offset=None, limit=None):

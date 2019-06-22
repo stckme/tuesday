@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 from apphelpers.rest.hug import user_id
 from app.libs import asset as assetlib
 from app.libs import publication as publicationlib
-from app.models import AssetRequest, asset_request_statuses, moderation_policies
+from app.models import AssetRequest, asset_request_statuses, moderation_policies, groups
 
 
 def create(url, title, requester: user_id):
@@ -60,12 +60,13 @@ def approve(id, approver: user_id, open_till=None, moderation_policy=None):
         moderation_policy=moderation_policy or moderation_policies.default.value,
         open_till=open_till
     )
-approve.login_required = True
+approve.groups_required = [groups.moderator.value, groups.admin.value]
 
 
 def reject(id, approver):
     mod_data = {'approver': approver, 'status': asset_request_statuses.rejected.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
+reject.groups_required = [groups.moderator.value, groups.admin.value]
 
 
 def cancel(id, approver):
@@ -74,3 +75,4 @@ def cancel(id, approver):
         raise Exception('not possible')
     mod_data = {'approver': approver, 'status': asset_request_statuses.cancelled.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
+cancel.groups_required = [groups.moderator.value, groups.admin.value]
