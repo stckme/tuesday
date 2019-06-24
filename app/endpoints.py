@@ -18,6 +18,8 @@ def setup_routes(factory):
     ar_handlers = (arlib.list_, arlib.create, None, arlib.get, arlib.update, None)
     factory.map_resource('/assetrequests/', handlers=ar_handlers)
     factory.post('/assetrequests/{id}/approve')(arlib.approve)
+    factory.post('/assetrequests/{id}/reject')(arlib.reject)
+    factory.post('/assetrequests/{id}/cancel')(arlib.cancel)
 
     asset_handlers = (assetlib.list_, None, None, assetlib.get, None, None)
     factory.map_resource('/assets/', handlers=asset_handlers)
@@ -35,7 +37,6 @@ def setup_routes(factory):
     factory.map_resource('/actionlog/comments/', handlers=actionlog_handlers)
     factory.get('/actionlog/comments/{comment_id}')(actionlog.list_by_comment)
 
-    # Admin APIs
     factory.get('/publications/')(publicationlib.list_)
     factory.get('/publications/{id}/assets')(publicationlib.get_assets)
 

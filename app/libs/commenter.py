@@ -59,4 +59,4 @@ def delete(id):
 
 def block(id):
     update(id, enabled=False)
-block.groups_required = [groups.moderator.value, groups.admin.value]
+block.groups_required = [groups.moderator.value]

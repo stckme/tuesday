@@ -57,7 +57,7 @@ def list_():
         }
         for asset in assets
     ]
-list_.groups_required = [groups.moderator.value, groups.admin.value]
+list_.groups_required = [groups.moderator.value]
 
 
 def get_pending_comments(id, parent=0, offset=None, limit=None):
