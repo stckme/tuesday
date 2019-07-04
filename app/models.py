@@ -1,6 +1,7 @@
 from enum import Enum
+from datetime import datetime
 
-from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField
+from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField, CharField
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 from apphelpers.db.peewee import create_pgdb_pool, create_base_model, created, dbtransaction
 from playhouse.hybrid import hybrid_property
@@ -26,9 +27,10 @@ class User(CommonModel):
     id = IntegerField(index=True, unique=True)
     username = TextField(unique=True)
     name = TextField()
+    email = TextField(null=True)
     enabled = BooleanField(default=True)
     badges = ArrayField(default=[])
-    groups = ArrayField(default=[])  # Unused for now
+    groups = ArrayField(CharField, default=[])
     bio = TextField(null=True)
     web = TextField(null=True)
     verified = BooleanField(default=False)
@@ -77,6 +79,10 @@ class Asset(CommonModel):
     @hybrid_property
     def rejected_comments_count(self):
         return RejectedComment.select().where(RejectedComment.asset==self.id).count()
+
+    @hybrid_property
+    def commenting_closed(self):
+        return self.open_till <= datetime.utcnow()
 
 
 class AssetRequest(CommonModel):

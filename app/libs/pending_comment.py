@@ -1,4 +1,4 @@
-from apphelpers.rest.hug import user_id
+from apphelpers.rest.hug import user_id, user_email
 
 from app.models import PendingComment, comment_actions, User, groups
 from app.models import comment_statuses, moderation_policies
