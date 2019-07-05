@@ -23,7 +23,7 @@ class CommonModel(BaseModel):
         legacy_table_names = False
 
 
-class User(CommonModel):
+class Member(CommonModel):
     id = IntegerField(index=True, unique=True)
     username = TextField(unique=True)
     name = TextField()
@@ -129,7 +129,7 @@ class ArchivedComment(BaseComment):
 
 class UserStats(CommonModel):
     # {count: 0, reported: <int>, accepted: <int>, rejected: <int>}
-    commenter = ForeignKeyField(User, index=True)
+    commenter = ForeignKeyField(Member, index=True)
     comments = IntegerField(default={})
     reported = IntegerField(default={})
     editor_picks = IntegerField(default=0)
@@ -142,8 +142,8 @@ class FlaggedReport(CommonModel):
         - flagging abuse doesn't slow down the system and moderation
         - lets track abusers independently
     """
-    comment = ForeignKeyField(User, null=False)
-    reporter = ForeignKeyField(User, null=False)
+    comment = ForeignKeyField(Member, null=False)
+    reporter = ForeignKeyField(Member, null=False)
     accepted = BooleanField(default=False)
 
 

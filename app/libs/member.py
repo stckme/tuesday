@@ -1,11 +1,12 @@
 from apphelpers import sessions
+from apphelpers.rest.hug import user_id
 
-from app.models import User, groups
+from app.models import Member, groups
 from app.libs import sso
 from converge import settings
 
 
-Model = User
+Model = Member
 model_common_fields = ['id', 'name', 'username', 'groups', 'email']
 user_groups_list = [group.value for group in groups]
 session = sessions.SessionDBHandler(dict(
@@ -33,7 +34,7 @@ def create(id, name=None, email=None, groups=None, username=None, bio=None, web=
         name = name or userinfo['name']
     username = username or generate_username(name)
     groups = groups or []
-    user = User.create(
+    user = Member.create(
         id=id, email=email, username=username, name=name,
         groups=groups, bio=bio, web=web
     )
@@ -41,7 +42,7 @@ def create(id, name=None, email=None, groups=None, username=None, bio=None, web=
 
 
 def exists(id):
-    return bool(User.get_or_none(User.id == id))
+    return bool(Member.get_or_none(Member.id == id))
 
 
 def get(id, fields=None):
@@ -60,19 +61,19 @@ def get_or_create(id, fields=None):
 
 
 def get_by_username(username):
-    user = User.get_or_none(User.username == username)
+    user = Member.get_or_none(Member.username == username)
     return user.to_dict() if user else None
 
 
 def get_by_email(email):
-    user = User.get_or_none(User.email == email)
+    user = Member.get_or_none(Member.email == email)
     if user is None:
         pass
     return user.to_dict() if user else None
 
 
 def list_():
-    users = User.select().where(User.groups != [])
+    users = Member.select()
     return [user.to_dict() for user in users]
 list_.groups_required = [groups.moderator.value]
 
@@ -81,11 +82,18 @@ def update(id, **mod_data):
     updatables = ('uid', 'username', 'name', 'enabled', 'badges', 'bio', 'web', 'verified', 'groups')
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
 
-    User.update(**update_dict).where(User.id == id).execute()
+    Member.update(**update_dict).where(Member.id == id).execute()
     if groups in mod_data:
         sso.update_user_groups(id, mod_data['groups'])
 update.groups_required = [groups.moderator.value]
 
 
+def update_me(id: user_id, **mod_data):
+    updatables = ('username', 'name', 'bio', 'web')
+    update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
+    Member.update(**update_dict).where(Member.id == id).execute()
+update_me.login_required = True
+
+
 def delete(id):
-    User.delete().where(User.id == id).execute()
+    Member.delete().where(Member.id == id).execute()

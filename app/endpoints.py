@@ -4,9 +4,8 @@ import app.libs.asset as assetlib
 import app.libs.pending_comment as pclib
 import app.libs.rejected_comment as rclib
 import app.libs.comment as commentlib
-import app.libs.user as userlib
 import app.libs.comment_action_log as actionlog
-import app.libs.commenter as commenterlib
+import app.libs.member as memberlib
 import app.libs.publication as publicationlib
 import apphelpers.sessions as sessionlib
 
@@ -50,7 +49,5 @@ def setup_routes(factory):
     factory.get('/comments/rejected/')(rclib.list_)
     factory.post('/comments/rejected/{id}/revert')(rclib.revert)
 
-    factory.post('/commenters/{id}/block')(commenterlib.block)
-
-    user_handlers = (userlib.list_, None, None, None, userlib.update, None)
-    factory.map_resource('/users/', handlers=user_handlers)
+    member_handlers = (memberlib.list_, None, None, None, memberlib.update, None)
+    factory.map_resource('/users/', handlers=member_handlers)

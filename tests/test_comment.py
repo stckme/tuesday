@@ -1,6 +1,6 @@
 from app.libs import asset as assetlib
 from app.libs import comment as commentlib
-from app.libs import commenter as commenterlib
+from app.libs import member as memberlib
 from app.libs import publication as publicationlib
 from app.libs import asset_request as assetrequestlib
 from app.libs import pending_comment as pendingcommentlib
@@ -16,7 +16,7 @@ from tests.data import test_new_publication_asset_request, test_asset_request
 def test_suite_setup():
     destroy_db()
     setup_db()
-    commenterlib.create(**test_commenter)
+    memberlib.create(**test_commenter)
     publicationlib.create(**test_publication)
     asset_req_id = assetrequestlib.create(**test_asset_request)
     assetrequestlib.approve(asset_req_id, approver=12)
