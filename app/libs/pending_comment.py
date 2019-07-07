@@ -1,7 +1,7 @@
 from apphelpers.rest.hug import user_id
 
 from app.models import PendingComment, comment_actions, User, groups
-from app.models import comment_statuses, moderation_policies
+from app.models import comment_statuses, moderation_policies, rejection_reasons
 from app.libs import comment as commentlib
 from app.libs import commenter as commenterlib
 from app.libs import rejected_comment as rejectedcommentlib
@@ -89,7 +89,7 @@ def approve(id, actor: user_id=0):
 approve.groups_required = [groups.moderator.value]
 
 
-def reject(id, note='', actor: user_id=0):
+def reject(id, note='', reason=None, actor: user_id=0):
     pending_comment = get(id)
     delete(id)
     commentactionloglib.create(
@@ -97,7 +97,11 @@ def reject(id, note='', actor: user_id=0):
         action=comment_actions.rejected.value,
         actor=actor or 0
     )
-    return rejectedcommentlib.create(note=note, **pending_comment)
+    return rejectedcommentlib.create(
+        **pending_comment,
+        note=note,
+        reason=reason or rejection_reasons.other.value
+    )
 reject.groups_required = [groups.moderator.value]
 
 

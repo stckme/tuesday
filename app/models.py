@@ -1,6 +1,6 @@
 from enum import Enum
 
-from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField
+from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField, CharField
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 from apphelpers.db.peewee import create_pgdb_pool, create_base_model, created, dbtransaction
 from playhouse.hybrid import hybrid_property
@@ -113,8 +113,17 @@ class Comment(BaseComment):
     pass
 
 
+class rejection_reasons(Enum):
+    spam = 'spam'
+    unvalued = 'unvalued'
+    offensive = 'offensive'
+    irrelevant = 'irrelevant'
+    other = 'other'
+
+
 class RejectedComment(BaseComment):
     note = TextField()
+    reason = CharField(default=rejection_reasons.other.value)
 
 
 class ArchivedComment(BaseComment):
