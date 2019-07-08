@@ -9,7 +9,7 @@ from converge import settings
 Model = Member
 model_common_fields = ['id', 'name', 'username', 'groups', 'email']
 user_groups_list = [group.value for group in groups]
-session = sessions.SessionDBHandler(dict(
+sessiondb = sessions.SessionDBHandler(dict(
     host=settings.SESSIONSDB_HOST,
     port=settings.SESSIONSDB_PORT,
     password=settings.SESSIONSDB_PASSWD,
@@ -29,7 +29,7 @@ def generate_username(name):
 
 def create(id, name=None, email=None, groups=None, username=None, bio=None, web=None):
     if name is None or email is None:
-        userinfo = session.get_for(id)
+        userinfo = sessiondb.get_for(id)
         email = email or userinfo['email']
         name = name or userinfo['name']
     username = username or generate_username(name)
