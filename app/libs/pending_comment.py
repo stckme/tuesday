@@ -1,15 +1,15 @@
-from apphelpers.rest.hug import user_id
+from apphelpers.rest.hug import user_id, user_email
 
-from app.models import PendingComment, comment_actions, User, groups
+from app.models import PendingComment, comment_actions, Member, groups
 from app.models import comment_statuses, moderation_policies
 from app.libs import comment as commentlib
-from app.libs import commenter as commenterlib
+from app.libs import member as memberlib
 from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 from converge import settings
 
 
-commenter_fields = [User.id, User.username, User.name, User.badges]
+commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
 
 
 def should_approve():
@@ -21,7 +21,7 @@ def should_approve():
 def create(
         commenter_id: user_id, asset, content, editors_pick=False, ip_address=None,
         parent=0, id=None, created=None):
-    commenter = commenterlib.get_or_create(commenter_id)
+    commenter = memberlib.get_or_create(commenter_id)
     data = dict(
         commenter_id=commenter_id,
         commenter=commenter,
