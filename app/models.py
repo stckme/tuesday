@@ -1,4 +1,5 @@
 from enum import Enum
+from datetime import datetime
 
 from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField, CharField
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
@@ -22,13 +23,14 @@ class CommonModel(BaseModel):
         legacy_table_names = False
 
 
-class User(CommonModel):
+class Member(CommonModel):
     id = IntegerField(index=True, unique=True)
     username = TextField(unique=True)
     name = TextField()
+    email = TextField(null=True)
     enabled = BooleanField(default=True)
     badges = ArrayField(default=[])
-    groups = ArrayField(default=[])  # Unused for now
+    groups = ArrayField(CharField, default=[])
     bio = TextField(null=True)
     web = TextField(null=True)
     verified = BooleanField(default=False)
@@ -77,6 +79,10 @@ class Asset(CommonModel):
     @hybrid_property
     def rejected_comments_count(self):
         return RejectedComment.select().where(RejectedComment.asset==self.id).count()
+
+    @hybrid_property
+    def commenting_closed(self):
+        return self.open_till <= datetime.utcnow()
 
 
 class AssetRequest(CommonModel):
@@ -132,7 +138,7 @@ class ArchivedComment(BaseComment):
 
 class UserStats(CommonModel):
     # {count: 0, reported: <int>, accepted: <int>, rejected: <int>}
-    commenter = ForeignKeyField(User, index=True)
+    commenter = ForeignKeyField(Member, index=True)
     comments = IntegerField(default={})
     reported = IntegerField(default={})
     editor_picks = IntegerField(default=0)
@@ -145,8 +151,8 @@ class FlaggedReport(CommonModel):
         - flagging abuse doesn't slow down the system and moderation
         - lets track abusers independently
     """
-    comment = ForeignKeyField(User, null=False)
-    reporter = ForeignKeyField(User, null=False)
+    comment = ForeignKeyField(Member, null=False)
+    reporter = ForeignKeyField(Member, null=False)
     accepted = BooleanField(default=False)
 
 

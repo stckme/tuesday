@@ -1,6 +1,6 @@
 from nose.tools import raises
 from app.libs import asset as assetlib
-from app.libs import commenter as commenterlib
+from app.libs import member as memberlib
 from app.libs import publication as publicationlib
 from app.libs import asset_request as assetrequestlib
 from app.models import setup_db, destroy_db, asset_request_statuses
@@ -12,7 +12,7 @@ from tests.data import test_new_publication_asset_request, test_asset_request, \
 def test_suite_setup():
     destroy_db()
     setup_db()
-    commenterlib.create(**test_commenter)
+    memberlib.create(**test_commenter)
     publicationlib.create(**test_publication)
 
 

@@ -2,15 +2,15 @@ import arrow
 import datetime
 
 from converge import settings
-from apphelpers.rest.hug import user_id, user_name
+from apphelpers.rest.hug import user_id
 from apphelpers.errors import NotFoundError
-from app.models import Asset, PendingComment, Comment, User, groups
+from app.models import Asset, PendingComment, Comment, Member, groups
 from app.libs import comment as commentlib
-from app.libs import commenter as commenterlib
+from app.libs import member as memberlib
 from app.libs import pending_comment as pendingcommentlib
 
 
-commenter_fields = [User.id, User.username, User.name, User.badges]
+commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
 
 
 def create_or_replace(id, url, title, publication, moderation_policy, open_till=None):
@@ -78,7 +78,6 @@ def get_approved_comments(id, parent=0, offset=None, limit=None):
     comments = Comment.select().where(*where).order_by(Comment.id.desc())
     if limit:
         comments = comments.limit(limit)
-
     return [comment.to_dict() for comment in comments]
 
 
@@ -169,13 +168,10 @@ def get_comments_count(id):
     return get_approved_comments_count(id)
 
 
-def get_comments_view(id, user_id: user_id=None, offset=None, limit=None, user_name: user_name=None):
+def get_comments_view(id, user_id: user_id=None, offset=None, limit: int=None):
     view = {"comments": get_comments(id, user_id, offset=offset, limit=limit)}
-
     if user_id:  # to support anonymous view
-        user = commenterlib.get_or_create(
-            user_id, fields=['username', 'enabled', 'name'], user_name=user_name
-        )
+        user = memberlib.get_or_create(user_id, fields=['username', 'enabled', 'name'])
         view["commenter"] = {
             "username": user["username"],
             "banned": not user["enabled"],
@@ -213,9 +209,7 @@ def get_comment_view(id, comment_id, user_id: user_id=None):
     view = {"comment": commentlib.get(comment_id)}
 
     if user_id:  # to support anonymous view
-        user = commenterlib.get_or_create(
-            user_id, fields=['username', 'enabled', 'name'], user_name=user_name
-        )
+        user = memberlib.get_or_create(user_id, fields=['username', 'enabled', 'name'])
         view["commenter"] = {
             "username": user["username"],
             "banned": not user["enabled"],

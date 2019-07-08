@@ -2,7 +2,7 @@ import hug
 
 from apphelpers.rest.hug import user_id
 
-from app.models import Comment, comment_actions, User, groups
+from app.models import Comment, comment_actions, Member, groups
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
@@ -10,7 +10,7 @@ from app.libs import comment_action_log as commentactionloglib
 Model = Comment
 model_common_fields = ['id', 'editors_pick', 'asset', 'content',
                          'parent', 'created', 'commenter']
-commenter_fields = [User.id, User.username, User.name, User.badges]
+commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
 
 
 def create(id, commenter_id: user_id, commenter, editors_pick, asset, content, ip_address, parent, created):

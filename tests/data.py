@@ -10,6 +10,7 @@ test_publication = dict(
 test_commenter = dict(
     id=1,
     name='test user',
+    email='dev@test.com',
     bio='I am a tester'
 )
 
@@ -37,5 +38,5 @@ test_comment = dict(
     editors_pick=False,
     asset=test_asset_request_id,
     content="test comment",
-    parent=1
+    parent=0
 )
