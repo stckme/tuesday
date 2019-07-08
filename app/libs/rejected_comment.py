@@ -5,7 +5,10 @@ from app.libs import pending_comment as pendingcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
 
-def create(id, commenter_id, commenter, editors_pick, asset, content, ip_address, parent, created, note):
+def create(
+        id, commenter_id, commenter, editors_pick, asset, content,
+        ip_address, parent, created, note, reason
+    ):
     comment = RejectedComment.create(
         id=id,
         commenter=commenter,
@@ -16,7 +19,8 @@ def create(id, commenter_id, commenter, editors_pick, asset, content, ip_address
         ip_address=ip_address,
         parent=parent,
         created=created,
-        note=note
+        note=note,
+        reason=reason
     )
     return comment.id
 
@@ -51,5 +55,6 @@ def revert(id, actor: user_id=0):
         actor=actor or 0
     )
     del(rejected_comment['note'])
+    del(rejected_comment['reason'])
     del(rejected_comment['commenter'])
     return pendingcommentlib.create(**rejected_comment)
