@@ -44,10 +44,12 @@ def setup_routes(factory):
     factory.map_resource('/comments/pending/', handlers=pc_handlers)
 
     factory.post('/comments/pending/{id}/approve')(pclib.approve)
-
     factory.post('/comments/pending/{id}/reject')(pclib.reject)
     factory.get('/comments/rejected/')(rclib.list_)
     factory.post('/comments/rejected/{id}/revert')(rclib.revert)
 
     member_handlers = (memberlib.list_, None, None, None, memberlib.update, None)
     factory.map_resource('/users/', handlers=member_handlers)
+
+    factory.post('/assets/{id}/stop')(assetlib.stop)
+    factory.post('/assets/{id}/restart')(assetlib.restart)
