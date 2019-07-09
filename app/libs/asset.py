@@ -27,6 +27,13 @@ def create_or_replace(id, url, title, publication, moderation_policy, open_till=
     return asset.id
 
 
+def update(id, **mod_data):
+    updatables = ('title', 'open_till', 'moderation_policy')
+    update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
+    Asset.update(**update_dict).where(Asset.id == id).execute()
+update.groups_required = [groups.moderator.value]
+
+
 def exists(id):
     return bool(Asset.get_or_none(Asset.id == id))
 
@@ -58,6 +65,19 @@ def list_():
         for asset in assets
     ]
 list_.groups_required = [groups.moderator.value]
+
+
+def stop(id):
+    open_till = arrow.utcnow().datetime
+    update(id, open_till=open_till)
+stop.groups_required = [groups.moderator.value]
+
+
+def restart(id, open_till=None):
+    if open_till is None:
+        open_till = arrow.utcnow().shift(days=settings.DEFAULT_ASSET_OPEN_DURATION).datetime
+    update(id, open_till=open_till)
+restart.groups_required = [groups.moderator.value]
 
 
 def get_pending_comments(id, parent=0, offset=None, limit=None):

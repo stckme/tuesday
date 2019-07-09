@@ -1,7 +1,8 @@
 from enum import Enum
 from datetime import datetime
 
-from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, DateTimeField, CharField
+from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, CharField
+from playhouse.postgres_ext import DateTimeTZField
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 from apphelpers.db.peewee import create_pgdb_pool, create_base_model, created, dbtransaction
 from playhouse.hybrid import hybrid_property
@@ -65,7 +66,7 @@ class Asset(CommonModel):
     url = TextField()
     title = TextField()
     publication = ForeignKeyField(Publication, null=True)
-    open_till = DateTimeField()
+    open_till = DateTimeTZField()
     moderation_policy = IntegerField(null=False, default=moderation_policies.default.value)
 
     @hybrid_property
@@ -121,7 +122,7 @@ class Comment(BaseComment):
 
 class rejection_reasons(Enum):
     spam = 'spam'
-    unvalued = 'unvalued'
+    novalue = 'novalue'
     offensive = 'offensive'
     irrelevant = 'irrelevant'
     other = 'other'

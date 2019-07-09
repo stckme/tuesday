@@ -1,3 +1,4 @@
+import arrow
 from nose.tools import raises
 from app.libs import asset as assetlib
 from app.libs import member as memberlib
@@ -42,6 +43,13 @@ def test_accept():
     asset = assetlib.get(test_asset_request_id)
     assert asset['id'] == test_asset_request_id
     assert asset['url'] == asset_request['url']
+
+    assetlib.stop(asset['id'])
+    asset = assetlib.get(test_asset_request_id)
+    assert asset['open_till'] < arrow.utcnow().datetime
+    assetlib.restart(asset['id'])
+    asset = assetlib.get(test_asset_request_id)
+    assert asset['open_till'] > arrow.utcnow().datetime
 
 
 @raises(Exception)
