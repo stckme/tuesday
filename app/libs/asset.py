@@ -76,7 +76,7 @@ stop.groups_required = [groups.moderator.value]
 def stop_all():
     open_till = arrow.utcnow().datetime
     Asset.update({'open_till': open_till}).where(Asset.open_till > open_till).execute()
-stop.groups_required = [groups.moderator.value]
+stop_all.groups_required = [groups.moderator.value]
 
 
 def restart(id, open_till=None):
