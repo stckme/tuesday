@@ -73,6 +73,12 @@ def stop(id):
 stop.groups_required = [groups.moderator.value]
 
 
+def stop_all():
+    open_till = arrow.utcnow().datetime
+    Asset.update({'open_till': open_till}).where(Asset.open_till > open_till).execute()
+stop.groups_required = [groups.moderator.value]
+
+
 def restart(id, open_till=None):
     if open_till is None:
         open_till = arrow.utcnow().shift(days=settings.DEFAULT_ASSET_OPEN_DURATION).datetime
@@ -199,7 +205,7 @@ def get_comments_view(id, user_id: user_id=None, offset=None, limit: int=None):
         }
 
     asset = get(id)
-    view["meta"] = {"commenting_closed": asset["open_till"] <= datetime.datetime.utcnow()}
+    view["meta"] = {"commenting_closed": asset["open_till"] <= arrow.utcnow().datetime}
     return view
 
 
@@ -208,7 +214,7 @@ def get_meta(id):
     if asset is not None:
         return {
             'comments_count': get_comments_count(id),
-            'commenting_closed': asset["open_till"] <= datetime.datetime.utcnow()
+            'commenting_closed': asset["open_till"] <= arrow.utcnow().datetime
         }
 get_meta.not_found_on_none = True
 
@@ -218,7 +224,7 @@ def get_assets_meta(ids):
     metas = {
         asset['id']: {
             'comments_count': get_comments_count(asset['id']),
-            'commenting_closed': asset['open_till'] <= datetime.datetime.utcnow()
+            'commenting_closed': asset['open_till'] <= arrow.utcnow().datetime
         }
         for asset in assets
     }
@@ -237,5 +243,5 @@ def get_comment_view(id, comment_id, user_id: user_id=None):
         }
 
     asset = get(id)
-    view["meta"] = {"commenting_closed": asset["open_till"] <= datetime.datetime.utcnow()}
+    view["meta"] = {"commenting_closed": asset["open_till"] <= arrow.utcnow().datetime}
     return view

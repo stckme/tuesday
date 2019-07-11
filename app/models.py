@@ -1,5 +1,5 @@
+import arrow
 from enum import Enum
-from datetime import datetime
 
 from peewee import ForeignKeyField, BooleanField, TextField, IntegerField, CharField
 from playhouse.postgres_ext import DateTimeTZField
@@ -13,6 +13,8 @@ from converge import settings
 db = create_pgdb_pool(database=settings.DB_NAME)
 dbtransaction = dbtransaction(db)
 BaseModel = create_base_model(db)
+
+SYSTEM_USER_ID = 0
 
 
 class CommonModel(BaseModel):
@@ -83,7 +85,7 @@ class Asset(CommonModel):
 
     @hybrid_property
     def commenting_closed(self):
-        return self.open_till <= datetime.utcnow()
+        return self.open_till <= arrow.utcnow().datetime
 
 
 class AssetRequest(CommonModel):

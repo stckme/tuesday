@@ -1,6 +1,6 @@
 from apphelpers.rest.hug import user_id, user_email
 
-from app.models import PendingComment, comment_actions, Member, groups
+from app.models import PendingComment, comment_actions, Member, groups, SYSTEM_USER_ID
 from app.models import comment_statuses, moderation_policies, rejection_reasons
 from app.libs import comment as commentlib
 from app.libs import member as memberlib
@@ -65,7 +65,7 @@ def delete(id):
     PendingComment.delete().where(PendingComment.id == id).execute()
 
 
-def update(id, actor: user_id=0, **mod_data):
+def update(id, actor: user_id=SYSTEM_USER_ID, **mod_data):
     updatables = ('editors_pick', 'content')
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
     PendingComment.update(**update_dict).where(PendingComment.id == id).execute()
@@ -73,29 +73,29 @@ def update(id, actor: user_id=0, **mod_data):
         commentactionloglib.create(
             comment=id,
             action=comment_actions.picked.value,
-            actor=actor or 0
+            actor=actor or SYSTEM_USER_ID
         )
 
 
-def approve(id, actor: user_id=0):
+def approve(id, actor: user_id=SYSTEM_USER_ID):
     pending_comment = get(id)
     delete(id)
     commentactionloglib.create(
         comment=id,
         action=comment_actions.approved.value,
-        actor=actor or 0
+        actor=actor or SYSTEM_USER_ID
     )
     return commentlib.create(**pending_comment)
 approve.groups_required = [groups.moderator.value]
 
 
-def reject(id, note='', reason=None, actor: user_id=0):
+def reject(id, note='', reason=None, actor: user_id=SYSTEM_USER_ID):
     pending_comment = get(id)
     delete(id)
     commentactionloglib.create(
         comment=id,
         action=comment_actions.rejected.value,
-        actor=actor or 0
+        actor=actor or SYSTEM_USER_ID
     )
     return rejectedcommentlib.create(
         **pending_comment,

@@ -6,7 +6,8 @@ from urllib.parse import urlsplit
 from apphelpers.rest.hug import user_id
 from app.libs import asset as assetlib
 from app.libs import publication as publicationlib
-from app.models import AssetRequest, asset_request_statuses, moderation_policies, groups
+from app.models import AssetRequest, asset_request_statuses
+from app.models import moderation_policies, groups, SYSTEM_USER_ID
 
 
 def create(url, title, requester: user_id):
@@ -30,6 +31,13 @@ def create(url, title, requester: user_id):
 create.groups_required = [groups.requester.value]
 
 
+def create_and_approve(url, title, requester: user_id = SYSTEM_USER_ID):
+    asset_id = create(url, title, requester)
+    approve(asset_id, approver=requester or SYSTEM_USER_ID)
+    return asset_id
+create_and_approve.groups_required = [groups.moderator.value]
+
+
 def get(id):
     asset_request = AssetRequest.select().where(AssetRequest.id == id).first()
     return asset_request.to_dict() if asset_request else None
@@ -51,7 +59,7 @@ def update(id, mod_data):
 update.groups_required = [groups.moderator.value]
 
 
-def approve(id, approver: user_id, open_till=None, moderation_policy=None):
+def approve(id, approver: user_id = SYSTEM_USER_ID, open_till=None, moderation_policy=None):
     mod_data = {'approver': approver, 'status': asset_request_statuses.accepted.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
     asset_request = get(id)
