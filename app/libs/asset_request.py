@@ -6,7 +6,8 @@ from urllib.parse import urlsplit
 from apphelpers.rest.hug import user_id
 from app.libs import asset as assetlib
 from app.libs import publication as publicationlib
-from app.models import AssetRequest, asset_request_statuses, moderation_policies, groups
+from app.models import AssetRequest, asset_request_statuses
+from app.models import moderation_policies, groups, SYSTEM_USER_ID
 
 
 def create(url, title, requester: user_id):
@@ -28,6 +29,13 @@ def create(url, title, requester: user_id):
     )
     return asset.id
 create.groups_required = [groups.requester.value]
+
+
+def create_and_approve(url, title, requester: user_id):
+    asset_id = create(url, title, requester)
+    approve(asset_id, approver=requester)
+    return asset_id
+create_and_approve.groups_required = [groups.moderator.value]
 
 
 def get(id):

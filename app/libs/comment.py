@@ -47,7 +47,7 @@ def list_(asset_id=None, editors_pick: hug.types.smart_boolean=None, page=1, siz
     return [comment.to_dict() for comment in comments]
 
 
-def update(id, actor: user_id=0, **mod_data):
+def update(id, actor: user_id, **mod_data):
     updatables = ('editors_pick',)
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)
     Comment.update(**update_dict).where(Comment.id == id).execute()
@@ -55,7 +55,7 @@ def update(id, actor: user_id=0, **mod_data):
         commentactionloglib.create(
             comment=id,
             action=comment_actions.picked.value,
-            actor=actor or 0
+            actor=actor
         )
 update.groups_required = [groups.moderator.value]
 
