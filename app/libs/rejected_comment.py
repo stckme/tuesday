@@ -46,13 +46,13 @@ def exists(id):
     return bool(comment)
 
 
-def revert(id, actor: user_id=0):
+def revert(id, actor: user_id):
     rejected_comment = get(id)
     delete(id)
     commentactionloglib.create(
         comment=id,
         action=comment_actions.reverted.value,
-        actor=actor or 0
+        actor=actor
     )
     del(rejected_comment['note'])
     del(rejected_comment['reason'])

@@ -7,7 +7,7 @@ from app.libs import pending_comment as pendingcommentlib
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
-from app.models import setup_db, destroy_db, asset_request_statuses, comment_actions
+from app.models import setup_db, destroy_db, asset_request_statuses, comment_actions, SYSTEM_USER_ID
 
 from tests.data import test_commenter, test_publication, test_comment
 from tests.data import test_new_publication_asset_request, test_asset_request
@@ -41,7 +41,7 @@ def test_accept():
     assert pendingcommentlib.exists(1)
 
     pending_comment = pendingcommentlib.get(1)
-    pendingcommentlib.approve(1)
+    pendingcommentlib.approve(1, SYSTEM_USER_ID)
 
     assert not pendingcommentlib.exists(1)
     assert commentlib.exists(1)
@@ -60,7 +60,7 @@ def test_list_accepted():
 
 def test_update_accepted():
     comment = commentlib.get(1)
-    commentlib.update(1, editors_pick=True)
+    commentlib.update(1, actor=SYSTEM_USER_ID, editors_pick=True)
     updated_comment = commentlib.get(1)
     assert comment['editors_pick'] != updated_comment['editors_pick']
 
@@ -94,7 +94,8 @@ def test_update_pending():
     pendingcommentlib.update(
         pending_comment_id,
         content='updated content',
-        editors_pick=True
+        editors_pick=True,
+        actor=SYSTEM_USER_ID
     )
     updated_comment = pendingcommentlib.get(pending_comment_id)
     assert comment['content'] != updated_comment['content']
@@ -116,7 +117,7 @@ def test_reject():
 
     pending_comment = pendingcommentlib.get(pending_comment_id)
     note = 'invalid comment'
-    rejected_id = pendingcommentlib.reject(pending_comment_id, note)
+    rejected_id = pendingcommentlib.reject(pending_comment_id, note=note, actor=SYSTEM_USER_ID)
 
     assert not pendingcommentlib.exists(pending_comment_id)
     assert rejectedcommentlib.exists(rejected_id)
@@ -128,13 +129,13 @@ def test_reject():
     assert len(logs) == 4
     assert logs[0]["action"] == comment_actions.rejected.value
 
-    response = rejectedcommentlib.revert(rejected_id)
+    response = rejectedcommentlib.revert(rejected_id, actor=SYSTEM_USER_ID)
     reverted_comment_id = response['id']
 
     assert not rejectedcommentlib.exists(reverted_comment_id)
     assert pendingcommentlib.exists(reverted_comment_id)
 
-    rejected_id = pendingcommentlib.reject(pending_comment_id, note)
+    rejected_id = pendingcommentlib.reject(pending_comment_id, note=note, actor=SYSTEM_USER_ID)
 
 
 def test_list_rejected():

@@ -31,9 +31,9 @@ def create(url, title, requester: user_id):
 create.groups_required = [groups.requester.value]
 
 
-def create_and_approve(url, title, requester: user_id = SYSTEM_USER_ID):
+def create_and_approve(url, title, requester: user_id):
     asset_id = create(url, title, requester)
-    approve(asset_id, approver=requester or SYSTEM_USER_ID)
+    approve(asset_id, approver=requester)
     return asset_id
 create_and_approve.groups_required = [groups.moderator.value]
 
@@ -59,7 +59,7 @@ def update(id, mod_data):
 update.groups_required = [groups.moderator.value]
 
 
-def approve(id, approver: user_id = SYSTEM_USER_ID, open_till=None, moderation_policy=None):
+def approve(id, approver: user_id, open_till=None, moderation_policy=None):
     mod_data = {'approver': approver, 'status': asset_request_statuses.accepted.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
     asset_request = get(id)
