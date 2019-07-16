@@ -53,3 +53,5 @@ def setup_routes(factory):
 
     factory.post('/assets/{id}/stop')(assetlib.stop)
     factory.post('/assets/{id}/restart')(assetlib.restart)
+
+    factory.get('/asset-logs/')(assetlib.get_asset_logs)

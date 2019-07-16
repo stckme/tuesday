@@ -44,8 +44,14 @@ def get(id):
         return asset.to_dict()
 
 
-def get_all(ids):
-    assets = Asset.select().where(Asset.id << ids)
+def get_asset_logs(last_timestamp):
+    assets = Asset.select(
+            Asset.id, Asset.url, Asset.created
+        ).where(
+            Asset.created > arrow.get(last_timestamp).datetime
+        ).order_by(
+            +Asset.created
+        )
     return [asset.to_dict() for asset in assets]
 
 

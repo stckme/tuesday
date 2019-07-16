@@ -45,7 +45,7 @@ get.groups_required = [groups.moderator.value]
 
 
 def list_(page=1, size=20):
-    asset_requests = AssetRequest.select().order_by(AssetRequest.created).paginate(page, size)
+    asset_requests = AssetRequest.select().order_by(AssetRequest.created.desc()).paginate(page, size)
     return [asset_request.to_dict() for asset_request in asset_requests]
 list_.groups_required = [groups.moderator.value]
 
