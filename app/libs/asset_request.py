@@ -28,7 +28,7 @@ def create(url, title, requester: user_id):
         requester=requester
     )
     return asset.id
-create.groups_required = [groups.requester.value]
+create.groups_required = [groups.requester.value, groups.moderator.value]
 
 
 def create_and_approve(url, title, requester: user_id):
