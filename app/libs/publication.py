@@ -36,16 +36,14 @@ def delete(id):
 delete.groups_required = [groups.community_manager.value]
 
 
-def get_assets(id, after=None):
+def get_assets(id, after=None, page=1, limit=20):
+    assets = Asset.select().order_by(Asset.created.desc())
     where = [Asset.publication==id]
     if after:
         where.append(Asset.created > arrow.get(after).datetime)
-    assets = Asset.select(
-        ).where(
-            *where
-        ).order_by(
-            Asset.created.desc()
-        )
+    else:
+        assets = assets.paginate(page, limit)
+    assets = assets.where(*where)
     return [
         {
             'comments_count': asset.comments_count,

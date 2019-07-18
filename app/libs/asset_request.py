@@ -74,13 +74,13 @@ def approve(id, approver: user_id, open_till=None, moderation_policy=None):
 approve.groups_required = [groups.moderator.value]
 
 
-def reject(id, approver):
+def reject(id, approver: user_id):
     mod_data = {'approver': approver, 'status': asset_request_statuses.rejected.value}
     AssetRequest.update(**mod_data).where(AssetRequest.id == id).execute()
 reject.groups_required = [groups.moderator.value]
 
 
-def cancel(id, approver):
+def cancel(id, approver: user_id):
     asset_request = get(id)
     if asset_request['status'] == asset_request_statuses.accepted.value:
         raise Exception('not possible')
