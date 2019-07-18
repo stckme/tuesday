@@ -44,11 +44,6 @@ def get(id):
         return asset.to_dict()
 
 
-def get_all(ids):
-    assets = Asset.select().where(Asset.id << ids)
-    return [asset.to_dict() for asset in assets]
-
-
 def get_by_url(url):
     return Asset.get_or_none(Asset.url == url)
 

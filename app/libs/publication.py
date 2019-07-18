@@ -1,3 +1,4 @@
+import arrow
 from app.models import Publication, Asset, groups
 
 
@@ -35,13 +36,22 @@ def delete(id):
 delete.groups_required = [groups.community_manager.value]
 
 
-def get_assets(id):
-    assets = Asset.select().where(Asset.publication==id).order_by(Asset.created.desc())
+def get_assets(id, after=None):
+    where = [Asset.publication==id]
+    if after:
+        where.append(Asset.created > arrow.get(after).datetime)
+    assets = Asset.select(
+        ).where(
+            *where
+        ).order_by(
+            Asset.created.desc()
+        )
     return [
         {
             'comments_count': asset.comments_count,
             'pending_comments_count': asset.pending_comments_count,
             'rejected_comments_count': asset.rejected_comments_count,
+            'commenting_closed': asset.commenting_closed,
             **asset.to_dict()
         }
         for asset in assets
