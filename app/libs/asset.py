@@ -245,3 +245,34 @@ def get_comment_view(id, comment_id, user_id: user_id=None):
     asset = get(id)
     view["meta"] = {"commenting_closed": asset["open_till"] <= arrow.utcnow().datetime}
     return view
+
+
+def list_with_top_comments(no_of_comments=1, after=None, limit=10):
+    after = after or arrow.utcnow().datetime
+    assets = Asset.select(
+        ).order_by(
+            Asset.created.desc()
+        ).where(
+            (Asset.created < arrow.get(after).datetime) &
+            (
+                (Asset.open_till > arrow.utcnow().datetime) |
+                (Asset.id << (Comment.select(Comment.asset_id)))
+            )
+        ).limit(
+            limit
+        ).execute()
+    asset_ids = [asset.id for asset in assets]
+    top_comments = commentlib.get_top_comments_for_assets(asset_ids, no_of_comments)
+
+    return {
+        'assets': [
+            {
+                'comments_count': asset.comments_count,
+                'commenting_closed': asset.commenting_closed,
+                'top_comments': top_comments.get(asset.id, []),
+                **asset.to_dict()
+            }
+            for asset in assets
+        ]
+    }
+list_.groups_required = [groups.moderator.value]

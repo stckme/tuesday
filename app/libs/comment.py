@@ -1,8 +1,9 @@
 import hug
+from peewee import fn
 
 from apphelpers.rest.hug import user_id
 
-from app.models import Comment, comment_actions, Member, groups
+from app.models import Comment, comment_actions, Member, groups, Asset
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 
@@ -85,3 +86,40 @@ def get_replies(parent, limit=None, offset=None):
         comments = comments.limit(limit)
 
     return [comment.to_dict() for comment in comments]
+
+
+def get_top_comments_for_assets(asset_ids, no_of_comments=1):
+    # Calculate the ranked comments per asset as a separate "table".
+    CommentAlias = Comment.alias()
+    subquery = CommentAlias.select(
+            CommentAlias.id,
+            fn.RANK().over(
+                partition_by=[CommentAlias.asset],
+                order_by=[
+                    CommentAlias.editors_pick.desc(),
+                    CommentAlias.created.desc()
+                ]
+            ).alias('rnk')
+        ).where(
+            CommentAlias.asset_id << asset_ids
+        ).alias('subq')
+
+    comments = Comment.select(
+        Comment
+    ).join(
+        Asset
+    ).where(
+        Comment.asset_id << asset_ids
+    ).switch(
+        Comment
+    ).join(
+        subquery,
+        on=((subquery.c.id == Comment.id) & (subquery.c.rnk <= 1))
+    ).execute()
+
+    asset2comments = {}
+    for comment in comments:
+        if comment.asset_id not in asset2comments:
+            asset2comments[comment.asset_id] = []
+        asset2comments[comment.asset_id].append(comment.to_dict())
+    return asset2comments
