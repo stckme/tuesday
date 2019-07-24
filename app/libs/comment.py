@@ -88,7 +88,7 @@ def get_replies(parent, limit=None, offset=None):
     return [comment.to_dict() for comment in comments]
 
 
-def get_top_comments_for_assets(asset_ids, no_of_comments=1):
+def get_featured_comments_for_assets(asset_ids, no_of_comments=1):
     # Calculate the ranked comments per asset as a separate "table".
     CommentAlias = Comment.alias()
     subquery = CommentAlias.select(

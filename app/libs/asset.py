@@ -247,7 +247,7 @@ def get_comment_view(id, comment_id, user_id: user_id=None):
     return view
 
 
-def list_with_top_comments(no_of_comments=1, after=None, limit=10):
+def list_with_featured_comments(no_of_comments=1, after=None, limit=10):
     after = after or arrow.utcnow().datetime
     assets = Asset.select(
         ).order_by(
@@ -262,14 +262,14 @@ def list_with_top_comments(no_of_comments=1, after=None, limit=10):
             limit
         ).execute()
     asset_ids = [asset.id for asset in assets]
-    top_comments = commentlib.get_top_comments_for_assets(asset_ids, no_of_comments)
+    featured_comments = commentlib.get_featured_comments_for_assets(asset_ids, no_of_comments)
 
     return {
         'assets': [
             {
                 'comments_count': asset.comments_count,
                 'commenting_closed': asset.commenting_closed,
-                'top_comments': top_comments.get(asset.id, []),
+                'featured_comments': featured_comments.get(asset.id, []),
                 **asset.to_dict()
             }
             for asset in assets
