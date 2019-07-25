@@ -97,6 +97,7 @@ def get_featured_comments_for_assets(asset_ids, no_of_comments=1):
                 partition_by=[CommentAlias.asset],
                 order_by=[
                     CommentAlias.editors_pick.desc(),
+                    CommentAlias.parent.asc(),
                     CommentAlias.created.desc()
                 ]
             ).alias('rnk')
@@ -114,7 +115,7 @@ def get_featured_comments_for_assets(asset_ids, no_of_comments=1):
         Comment
     ).join(
         subquery,
-        on=((subquery.c.id == Comment.id) & (subquery.c.rnk <= 1))
+        on=((subquery.c.id == Comment.id) & (subquery.c.rnk <= no_of_comments))
     ).execute()
 
     asset2comments = {}
