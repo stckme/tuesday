@@ -21,7 +21,7 @@ def setup_routes(factory):
     factory.post('/assetrequests/{id}/reject')(arlib.reject)
     factory.post('/assetrequests/{id}/cancel')(arlib.cancel)
 
-    asset_handlers = (assetlib.list_, None, None, assetlib.get, None, None)
+    asset_handlers = (assetlib.list_, arlib.create_and_approve, None, assetlib.get, None, None)
     factory.map_resource('/assets/', handlers=asset_handlers)
     factory.get('/assets/{id}/comments/count')(assetlib.get_comments_count)
     factory.get('/assets/{id}/comments')(assetlib.get_comments_view)

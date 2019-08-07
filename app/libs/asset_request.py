@@ -20,14 +20,16 @@ def create(url, title, requester: user_id):
     # asset ids are hashes generated from URLs. Idea is client doesn't need to
     # query server to find id for certain asset. Client can generate the id
     # itself from the asset url (provided it knows the hashing technique used)
-    asset = AssetRequest.create(
-        id=sha1(bytes(url, 'utf8')).hexdigest(),
-        url=url,
-        title=title,
-        publication=publication_id,
-        requester=requester
-    )
-    return asset.id
+    asset_id = sha1(bytes(url, 'utf8')).hexdigest()
+    if not exists(asset_id):
+        asset = AssetRequest.create(
+            id=asset_id,
+            url=url,
+            title=title,
+            publication=publication_id,
+            requester=requester
+        )
+    return asset_id
 create.groups_required = [groups.requester.value, groups.moderator.value]
 
 
@@ -42,6 +44,10 @@ def get(id):
     asset_request = AssetRequest.select().where(AssetRequest.id == id).first()
     return asset_request.to_dict() if asset_request else None
 get.groups_required = [groups.moderator.value]
+
+
+def exists(id):
+    return bool(AssetRequest.get_or_none(AssetRequest.id == id))
 
 
 def list_(page=1, size=20):
