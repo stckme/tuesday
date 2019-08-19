@@ -91,6 +91,7 @@ update.groups_required = [groups.moderator.value]
 def get_me(id: user_id, fields=None):
     fields = ['username', 'enabled', 'name', 'badges', 'bio', 'web']
     return get(id, fields)
+get_me.login_required = True
 
 
 def update_me(id: user_id, **mod_data):
