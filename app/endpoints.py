@@ -15,7 +15,6 @@ def setup_routes(factory):
     factory.get('/echo/{word}')(debughelpers.echo)
     factory.get('/whoami')(sessionlib.whoami)
 
-    factory.map_resource('/assets/', handlers=asset_handlers)
     factory.get('/assets/{id}/comments/count')(assetlib.get_comments_count)
     factory.get('/assets/{id}/comments')(assetlib.get_comments_view)
     factory.get('/assets/{id}/comments/{comment_id}')(assetlib.get_comment_view)
