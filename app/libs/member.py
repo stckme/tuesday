@@ -88,6 +88,11 @@ def update(id, **mod_data):
 update.groups_required = [groups.moderator.value]
 
 
+def get_me(id: user_id, fields=None):
+    fields = ['username', 'enabled', 'name', 'badges', 'bio', 'web']
+    return get(id, fields)
+
+
 def update_me(id: user_id, **mod_data):
     updatables = ('username', 'name', 'bio', 'web')
     update_dict = dict((k, v) for (k, v) in list(mod_data.items()) if k in updatables)

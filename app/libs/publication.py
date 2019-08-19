@@ -36,7 +36,7 @@ def delete(id):
 delete.groups_required = [groups.community_manager.value]
 
 
-def get_assets(id, after=None, page=1, limit=20):
+def get_assets(id, after=None, page: int=1, limit: int=20):
     assets = Asset.select().order_by(Asset.created.desc())
     where = [Asset.publication==id]
     if after:
@@ -44,14 +44,18 @@ def get_assets(id, after=None, page=1, limit=20):
     else:
         assets = assets.paginate(page, limit)
     assets = assets.where(*where)
-    return [
-        {
-            'comments_count': asset.comments_count,
-            'pending_comments_count': asset.pending_comments_count,
-            'rejected_comments_count': asset.rejected_comments_count,
-            'commenting_closed': asset.commenting_closed,
-            **asset.to_dict()
-        }
-        for asset in assets
-    ]
+    return sorted(
+        [
+            {
+                'comments_count': asset.comments_count,
+                'pending_comments_count': asset.pending_comments_count,
+                'rejected_comments_count': asset.rejected_comments_count,
+                'commenting_closed': asset.commenting_closed,
+                **asset.to_dict()
+            }
+            for asset in assets
+        ],
+        key=lambda a: (a['pending_comments_count'], a['created']),
+        reverse=True
+    )
 get_assets.groups_required = [groups.moderator.value]

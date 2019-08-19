@@ -15,7 +15,6 @@ def setup_routes(factory):
     factory.get('/echo/{word}')(debughelpers.echo)
     factory.get('/whoami')(sessionlib.whoami)
 
-    asset_handlers = (assetlib.list_, None, None, assetlib.get, None, None)
     factory.map_resource('/assets/', handlers=asset_handlers)
     factory.get('/assets/{id}/comments/count')(assetlib.get_comments_count)
     factory.get('/assets/{id}/comments')(assetlib.get_comments_view)
@@ -33,4 +32,5 @@ def setup_routes(factory):
     pc_handlers = (pclib.list_, pclib.create, None, pclib.get, None, None)
     factory.map_resource('/comments/pending/', handlers=pc_handlers)
 
+    factory.get('/users/me')(memberlib.get_me)
     factory.patch('/users/me')(memberlib.update_me)
