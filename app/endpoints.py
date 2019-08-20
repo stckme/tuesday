@@ -15,14 +15,6 @@ def setup_routes(factory):
     factory.get('/echo/{word}')(debughelpers.echo)
     factory.get('/whoami')(sessionlib.whoami)
 
-    ar_handlers = (arlib.list_, arlib.create, None, arlib.get, arlib.update, None)
-    factory.map_resource('/assetrequests/', handlers=ar_handlers)
-    factory.post('/assetrequests/{id}/approve')(arlib.approve)
-    factory.post('/assetrequests/{id}/reject')(arlib.reject)
-    factory.post('/assetrequests/{id}/cancel')(arlib.cancel)
-
-    asset_handlers = (assetlib.list_, arlib.create_and_approve, None, assetlib.get, None, None)
-    factory.map_resource('/assets/', handlers=asset_handlers)
     factory.get('/assets/{id}/comments/count')(assetlib.get_comments_count)
     factory.get('/assets/{id}/comments')(assetlib.get_comments_view)
     factory.get('/assets/{id}/comments/{comment_id}')(assetlib.get_comment_view)
@@ -34,23 +26,10 @@ def setup_routes(factory):
     comment_handlers = (commentlib.list_, None, None, commentlib.get, commentlib.update, None)
     factory.map_resource('/comments/', handlers=comment_handlers)
 
-    actionlog_handlers = (None, actionlog.create, None, None, None, None)
-    factory.map_resource('/actionlog/comments/', handlers=actionlog_handlers)
-    factory.get('/actionlog/comments/{comment_id}')(actionlog.list_by_comment)
-
-    factory.get('/publications/')(publicationlib.list_)
     factory.get('/publications/{id}/assets')(publicationlib.get_assets)
 
     pc_handlers = (pclib.list_, pclib.create, None, pclib.get, None, None)
     factory.map_resource('/comments/pending/', handlers=pc_handlers)
 
-    factory.post('/comments/pending/{id}/approve')(pclib.approve)
-    factory.post('/comments/pending/{id}/reject')(pclib.reject)
-    factory.get('/comments/rejected/')(rclib.list_)
-    factory.post('/comments/rejected/{id}/revert')(rclib.revert)
-
-    member_handlers = (memberlib.list_, None, None, None, memberlib.update, None)
-    factory.map_resource('/users/', handlers=member_handlers)
-
-    factory.post('/assets/{id}/stop')(assetlib.stop)
-    factory.post('/assets/{id}/restart')(assetlib.restart)
+    factory.get('/users/me')(memberlib.get_me)
+    factory.patch('/users/me')(memberlib.update_me)
