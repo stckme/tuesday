@@ -123,16 +123,16 @@ class Comment(BaseComment):
 
 
 class rejection_reasons(Enum):
-    spam = 'spam'
-    novalue = 'novalue'
-    offensive = 'offensive'
-    irrelevant = 'irrelevant'
-    other = 'other'
+    spam = 0
+    novalue = 1
+    offensive = 2
+    irrelevant = 3
+    other = 4
 
 
 class RejectedComment(BaseComment):
     note = TextField()
-    reason = CharField(default=rejection_reasons.other.value)
+    reason = IntegerField(default=rejection_reasons.other.value)
 
 
 class ArchivedComment(BaseComment):
