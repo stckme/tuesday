@@ -55,34 +55,30 @@ def get_assets(id, page: int=1, limit: int=20):
         ).paginate(page, limit)
     asset_ids = [assets.id for assets in assets]
 
-    assets_with_rejected_comments_count = Asset.select(
-            Asset.id,
+    assets_with_rejected_comments_count = RejectedComment.select(
+            RejectedComment.asset_id,
             fn.COUNT(RejectedComment.id).alias('total_rejected_comments')
-        ).join(
-            RejectedComment, JOIN.LEFT_OUTER
         ).where(
-            Asset.id << asset_ids
-        ).group_by(Asset.id)
+            RejectedComment.asset_id << asset_ids
+        ).group_by(RejectedComment.asset_id)
     rejected_comments_count = {
-        asset.id: asset.total_rejected_comments for asset in assets_with_rejected_comments_count
+        asset.asset_id: asset.total_rejected_comments for asset in assets_with_rejected_comments_count
     }
 
-    assets_with_comments_count = Asset.select(
-            Asset.id,
+    assets_with_comments_count = Comment.select(
+            Comment.asset_id,
             fn.COUNT(Comment.id).alias('total_comments')
-        ).join(
-            Comment, JOIN.LEFT_OUTER
         ).where(
-            Asset.id << asset_ids
-        ).group_by(Asset.id)
+            Comment.asset_id << asset_ids
+        ).group_by(Comment.asset_id)
     comments_count = {
         asset.id: asset.total_comments for asset in assets_with_comments_count
     }
     return [
         {
-            'comments_count': comments_count[asset.id],
+            'comments_count': comments_count.get(asset.id, 0),
             'pending_comments_count': asset.total_pending_comments,
-            'rejected_comments_count': rejected_comments_count[asset.id],
+            'rejected_comments_count': rejected_comments_count.get(asset.id, 0),
             'commenting_closed': asset.commenting_closed,
             **asset.to_dict()
         }
