@@ -33,16 +33,16 @@ class Member(CommonModel):
     email = TextField(null=True)
     enabled = BooleanField(default=True)
     badges = ArrayField(default=[])
-    groups = ArrayField(CharField, default=[])
+    groups = ArrayField(IntegerField, default=[])
     bio = TextField(null=True)
     web = TextField(null=True)
     verified = BooleanField(default=False)
 
 
 class groups(Enum):
-    community_manager = '10'
-    moderator = '11'
-    requester = '12'
+    community_manager = 10
+    moderator = 11
+    requester = 12
 
 
 class Publication(CommonModel):
