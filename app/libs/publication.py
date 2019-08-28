@@ -1,4 +1,3 @@
-import arrow
 from peewee import fn, JOIN
 
 from app.models import Publication, Asset, groups
@@ -53,7 +52,8 @@ def get_assets(id, page: int=1, limit: int=20):
         ).group_by(
             Asset.id
         ).paginate(page, limit)
-    asset_ids = [assets.id for assets in assets]
+
+    asset_ids = [asset.id for asset in assets]
 
     assets_with_rejected_comments_count = RejectedComment.select(
             RejectedComment.asset_id,
@@ -61,7 +61,7 @@ def get_assets(id, page: int=1, limit: int=20):
         ).where(
             RejectedComment.asset_id << asset_ids
         ).group_by(RejectedComment.asset_id)
-    rejected_comments_count = {
+    rejected_comment_counts = {
         asset.asset_id: asset.total_rejected_comments for asset in assets_with_rejected_comments_count
     }
 
@@ -71,14 +71,15 @@ def get_assets(id, page: int=1, limit: int=20):
         ).where(
             Comment.asset_id << asset_ids
         ).group_by(Comment.asset_id)
-    comments_count = {
+    comment_counts = {
         asset.id: asset.total_comments for asset in assets_with_comments_count
     }
+
     return [
         {
-            'comments_count': comments_count.get(asset.id, 0),
+            'comments_count': comment_counts.get(asset.id, 0),
             'pending_comments_count': asset.total_pending_comments,
-            'rejected_comments_count': rejected_comments_count.get(asset.id, 0),
+            'rejected_comments_count': rejected_comment_counts.get(asset.id, 0),
             'commenting_closed': asset.commenting_closed,
             **asset.to_dict()
         }
