@@ -98,4 +98,4 @@ def get_assets_with_comment_stats(id, page: int=1, limit: int=20, after=None):
         }
         for asset in assets
     ]
-get_assets_with_comments_stat.groups_required = [groups.moderator.value]
+get_assets_with_comment_stats.groups_required = [groups.moderator.value]
