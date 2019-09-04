@@ -1,3 +1,4 @@
+import arrow
 from peewee import fn, JOIN
 
 from app.models import Publication, Asset, groups
@@ -38,7 +39,17 @@ def delete(id):
 delete.groups_required = [groups.community_manager.value]
 
 
-def get_assets(id, page: int=1, limit: int=20):
+def get_assets(id, after=None, page: int=1, limit: int=20):
+    assets = Asset.select().order_by(Asset.created.desc())
+    where = [Asset.publication==id]
+    if after:
+        where.append(Asset.created > arrow.get(after).datetime)
+    assets = assets.where(*where).paginate(page, limit)
+    return [asset.to_dict() for asset in assets]
+get_assets.groups_required = [groups.moderator.value]
+
+
+def get_assets_with_comment_stats(id, page: int=1, limit: int=20, after=None):
     assets = Asset.select(
             Asset,
             fn.COUNT(PendingComment.id).alias('total_pending_comments')
@@ -85,4 +96,4 @@ def get_assets(id, page: int=1, limit: int=20):
         }
         for asset in assets
     ]
-get_assets.groups_required = [groups.moderator.value]
+get_assets_with_comment_stats.groups_required = [groups.moderator.value]
