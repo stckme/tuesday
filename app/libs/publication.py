@@ -44,9 +44,7 @@ def get_assets(id, after=None, page: int=1, limit: int=20):
     where = [Asset.publication==id]
     if after:
         where.append(Asset.created > arrow.get(after).datetime)
-    else:
-        assets = assets.paginate(page, limit)
-    assets = assets.where(*where)
+    assets = assets.where(*where).paginate(page, limit)
     return [asset.to_dict() for asset in assets]
 get_assets.groups_required = [groups.moderator.value]
 
