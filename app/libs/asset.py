@@ -247,19 +247,16 @@ def get_comment_view(id, comment_id, user_id: user_id=None):
     return view
 
 
-def list_with_featured_comments(no_of_comments=1, after=None, limit=10):
-    after = after or arrow.utcnow().datetime
+def list_with_featured_comments(asset_ids, no_of_comments=1):
     assets = Asset.select(
         ).order_by(
             Asset.created.desc()
         ).where(
-            (Asset.created < arrow.get(after).datetime) &
+            (Asset.id << asset_ids) &
             (
                 (Asset.open_till > arrow.utcnow().datetime) |
                 (Asset.id << (Comment.select(Comment.asset_id)))
             )
-        ).limit(
-            limit
         ).execute()
     asset_ids = [asset.id for asset in assets]
     featured_comments = commentlib.get_featured_comments_for_assets(asset_ids, no_of_comments)
