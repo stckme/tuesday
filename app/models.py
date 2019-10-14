@@ -40,9 +40,9 @@ class Member(CommonModel):
 
 
 class groups(Enum):
-    community_manager = '10'
-    moderator = '11'
-    requester = '12'
+    community_manager = 'pc:{}::10'
+    moderator = 'pc:{}::11'
+    requester = 'pc:{}::12'
 
 
 class Publication(CommonModel):

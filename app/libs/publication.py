@@ -49,12 +49,12 @@ def get_assets(id, after=None, page: int=1, limit: int=20):
 get_assets.groups_required = [groups.moderator.value]
 
 
-def get_assets_with_comment_stats(id, page: int=1, limit: int=20, after=None):
+def get_assets_with_comment_stats(pub_id, page: int=1, limit: int=20, after=None):
     assets = Asset.select(
             Asset,
             fn.COUNT(PendingComment.id).alias('total_pending_comments')
         ).where(
-            Asset.publication == id
+            Asset.publication == pub_id
         ).join(
             PendingComment, JOIN.LEFT_OUTER
         ).order_by(
