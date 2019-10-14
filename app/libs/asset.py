@@ -247,7 +247,12 @@ def get_comment_view(id, comment_id, user_id: user_id=None):
     return view
 
 
-def list_with_featured_comments(asset_ids, no_of_comments=1):
+def get_with_featured_comments(asset_ids, no_of_comments=1):
+    commented_assets = Comment.select(
+        Comment.asset_id
+        ).where(
+            Comment.asset_id << asset_ids
+        ).distinct()
     assets = Asset.select(
         ).order_by(
             Asset.created.desc()
@@ -255,7 +260,7 @@ def list_with_featured_comments(asset_ids, no_of_comments=1):
             (Asset.id << asset_ids) &
             (
                 (Asset.open_till > arrow.utcnow().datetime) |
-                (Asset.id << (Comment.select(Comment.asset_id)))
+                (Asset.id << commented_assets)
             )
         ).execute()
     asset_ids = [asset.id for asset in assets]
@@ -272,4 +277,4 @@ def list_with_featured_comments(asset_ids, no_of_comments=1):
             for asset in assets
         ]
     }
-list_.groups_required = [groups.moderator.value]
+get_with_featured_comments.groups_required = [groups.moderator.value]
