@@ -262,7 +262,7 @@ def get_with_featured_comments(asset_ids, no_of_comments=1):
                 (Asset.open_till > arrow.utcnow().datetime) |
                 (Asset.id << commented_assets)
             )
-        ).execute()
+        )
     asset_ids = [asset.id for asset in assets]
     featured_comments = commentlib.get_featured_comments_for_assets(asset_ids, no_of_comments)
 
