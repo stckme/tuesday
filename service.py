@@ -10,6 +10,11 @@ import app.models
 from converge import settings
 
 
+@hug.not_found()
+def not_found_handler():
+    return "Not Found"
+
+
 def make_app():
     router = hug.route.API(__name__)
 
