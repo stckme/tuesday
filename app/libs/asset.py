@@ -14,6 +14,10 @@ commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
 
 
 def create_or_replace(id, url, title, publication, moderation_policy, open_till=None):
+    asset = get_by_url(url)
+    if asset:
+        return asset.id
+
     if open_till is None:
         open_till = arrow.utcnow().shift(days=settings.DEFAULT_ASSET_OPEN_DURATION).datetime
     asset = Asset.create(
@@ -147,6 +151,7 @@ def get_unfiltered_comments(id, parent=0, offset=None, limit=10, replies_limit=N
 
     # Combining Approved & Pending Comments
     return sorted(pending_comments + approved_comments, key=lambda x: x['created'], reverse=True)
+get_unfiltered_replies.groups_required = [groups.moderator.value]
 
 
 def filter_inaccessible_comments(user_id, comments, limit, replies_limit=None):
