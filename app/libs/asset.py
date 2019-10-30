@@ -133,7 +133,10 @@ def get_unfiltered_replies(parent, limit=10, offset=None):
 
 
 # Todo Add Caching
-def get_unfiltered_comments(id, parent=0, offset=None, limit=10, replies_limit=None):
+def get_unfiltered_comments(id, parent=0, offset=None, limit=None, replies_limit=None):
+    limit = limit if limit else settings.DEFAULT_COMMENTS_FETCH_LIMIT
+    replies_limit = replies_limit if replies_limit else settings.DEFAULT_REPLIES_FETCH_LIMIT
+
     # Getting Approved Comments
     approved_comments = get_approved_comments(id, parent=parent, offset=offset, limit=limit)
     approved_comments = [
@@ -212,6 +215,10 @@ def get_comments_view(id, user_id: user_id=None, offset=None, limit: int=None):
     asset = get(id)
     view["meta"] = {"commenting_closed": asset["open_till"] <= arrow.utcnow().datetime}
     return view
+
+
+def get_unfiltered_comments_view(id, parent=0, offset=None, limit: int=None):
+    return {"comments": get_unfiltered_comments(id, parent=parent, offset=offset, limit=limit)}
 
 
 def get_meta(id):

@@ -27,7 +27,7 @@ def setup_routes(factory):
     factory.get('/assets/{id}/replies')(assetlib.get_replies)
     factory.get('/assets/{id}/meta')(assetlib.get_meta)
     factory.get('/assets/meta')(assetlib.get_assets_meta)
-    factory.get('/assets/{id}/comments')(assetlib.get_unfiltered_comments)
+    factory.get('/assets/{id}/comments')(assetlib.get_unfiltered_comments_view)
     factory.get('/assets/{id}/comments/{comment_id}')(assetlib.get_comment_view)
     factory.get('/assets/comments/featured')(assetlib.get_with_featured_comments)
 
