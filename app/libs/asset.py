@@ -14,6 +14,10 @@ commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
 
 
 def create_or_replace(id, url, title, publication, moderation_policy, open_till=None):
+    asset = get_by_url(url)
+    if asset:
+        return asset.id
+
     if open_till is None:
         open_till = arrow.utcnow().shift(days=settings.DEFAULT_ASSET_OPEN_DURATION).datetime
     asset = Asset.create(
@@ -129,7 +133,10 @@ def get_unfiltered_replies(parent, limit=10, offset=None):
 
 
 # Todo Add Caching
-def get_unfiltered_comments(id, parent=0, offset=None, limit=10, replies_limit=None):
+def get_unfiltered_comments(id, parent=0, offset=None, limit=None, replies_limit=None):
+    limit = limit if limit else settings.DEFAULT_COMMENTS_FETCH_LIMIT
+    replies_limit = replies_limit if replies_limit else settings.DEFAULT_REPLIES_FETCH_LIMIT
+
     # Getting Approved Comments
     approved_comments = get_approved_comments(id, parent=parent, offset=offset, limit=limit)
     approved_comments = [
@@ -147,6 +154,7 @@ def get_unfiltered_comments(id, parent=0, offset=None, limit=10, replies_limit=N
 
     # Combining Approved & Pending Comments
     return sorted(pending_comments + approved_comments, key=lambda x: x['created'], reverse=True)
+get_unfiltered_replies.groups_required = [groups.moderator.value]
 
 
 def filter_inaccessible_comments(user_id, comments, limit, replies_limit=None):
@@ -209,6 +217,10 @@ def get_comments_view(id, user_id: user_id=None, offset=None, limit: int=None):
     return view
 
 
+def get_unfiltered_comments_view(id, parent=0, offset=None, limit: int=None):
+    return {"comments": get_unfiltered_comments(id, parent=parent, offset=offset, limit=limit)}
+
+
 def get_meta(id):
     asset = get(id)
     if asset is not None:
@@ -231,7 +243,7 @@ def get_assets_meta(ids):
     return metas
 
 
-def get_comment_view(id, comment_id, user_id: user_id=None):
+def get_comment_view(id, comment_id, user_id: user_id=None):  #TODO: Remove this. Deprecated
     view = {"comment": commentlib.get(comment_id)}
 
     if user_id:  # to support anonymous view
