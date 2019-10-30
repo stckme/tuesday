@@ -243,7 +243,7 @@ def get_assets_meta(ids):
     return metas
 
 
-def get_comment_view(id, comment_id, user_id: user_id=None):
+def get_comment_view(id, comment_id, user_id: user_id=None):  #TODO: Remove this. Deprecated
     view = {"comment": commentlib.get(comment_id)}
 
     if user_id:  # to support anonymous view
