@@ -1,7 +1,6 @@
 DB_NAME = "defaultdb"
 DEFAULT_ASSET_OPEN_DURATION = 4 # no of days
 
-
 SESSIONSDB_HOST = "127.0.0.1"
 SESSIONSDB_PORT = 6379
 SESSIONSDB_PASSWD = None
@@ -13,3 +12,8 @@ DEFAULT_REPLIES_FETCH_LIMIT = 100
 MODERATION_POLICY = 2 # 1:Automatic, 2:Manual
 
 SSO_API_URL = "http://localhost:9000/api/1.0/"
+
+# Redis
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1
