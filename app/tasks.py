@@ -4,5 +4,5 @@ import settings
 
 queue = Celery(
     'Queue',
-    broker='redis://{}:{}/0'.format(settings.REDIS_HOST, settings.REDIS_PORT)
+    broker='redis://{}:{}/0'.format(settings.TASKQ_HOST, settings.TASKQ_PORT)
 )

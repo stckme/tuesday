@@ -15,6 +15,6 @@ MODERATION_POLICY = 2 # 1:Automatic, 2:Manual
 SSO_API_URL = "http://localhost:9000/api/1.0/"
 
 # Redis
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
-REDIS_DB = 1
+TASKQ_HOST = 'localhost'
+TASKQ_PORT = 6379
+TASKQ_DB = 1
