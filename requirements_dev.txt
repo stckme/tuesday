@@ -10,5 +10,3 @@ twine
 nose-timer
 yanc
 ipython
-celery
-redis
