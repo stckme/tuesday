@@ -15,6 +15,19 @@ MODERATION_POLICY = 2 # 1:Automatic, 2:Manual
 SSO_API_URL = "http://localhost:9000/api/1.0/"
 
 # Redis
-TASKQ_HOST = 'localhost'
+TASKQ_HOST = "localhost"
 TASKQ_PORT = 6379
 TASKQ_DB = 1
+
+EMAIL_NOTIFICATION = False
+
+# SMTP
+MD_HOST = ''
+MD_PORT = 587
+MD_USERNAME = ''
+MD_KEY = ''
+
+EMAIL_NOTIFICATION_SENDER = "example@example.com"
+TEMPLATE_DIR = "app/templates"
+ARTICLE_EMAIL_TEMPLATE_DIR = TEMPLATE_DIR + ""
+ARTICLE_EMAIL_SUBJECT_PREFIX = ""

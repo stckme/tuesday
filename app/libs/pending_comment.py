@@ -86,6 +86,16 @@ def approve(id, actor: user_id):
         action=comment_actions.approved.value,
         actor=actor
     )
+    if settings.EMAIL_NOTIFICATION:
+        email_info = dict(
+            mail_subject='Comment Approved',
+            template_name='comment_approved',
+            template_data=dict(
+                comment=pending_comment['content'][:215],
+                comment_id=id
+            )
+        )
+        signals.send_notification.send((user_email,), **email_info)
     return commentlib.create(**pending_comment)
 approve.groups_required = [groups.moderator.value]
 

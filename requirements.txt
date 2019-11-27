@@ -9,3 +9,4 @@ redis
 psycopg2
 converge
 gunicorn
+blinker
