@@ -78,7 +78,7 @@ def update(id, actor: user_id, **mod_data):
 update.groups_required = [groups.moderator.value]
 
 
-def approve(id, actor: user_id):
+def approve(id, actor: user_id, actor_email: user_email):
     pending_comment = get(id)
     delete(id)
     commentactionloglib.create(
@@ -87,15 +87,18 @@ def approve(id, actor: user_id):
         actor=actor
     )
     if settings.EMAIL_NOTIFICATION:
+        comment = pending_comment['content']
+        display_comment = comment[:215] + '...' if len(comment) > 215 else comment
+
         email_info = dict(
             mail_subject='Comment Approved',
             template_name='comment_approved',
             template_data=dict(
-                comment=pending_comment['content'][:215],
+                comment=display_comment,
                 comment_id=id
             )
         )
-        signals.send_notification.send((user_email,), **email_info)
+        signals.send_notification.send((actor_email,), **email_info)
     return commentlib.create(**pending_comment)
 approve.groups_required = [groups.moderator.value]
 

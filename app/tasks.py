@@ -22,7 +22,7 @@ def notify_commentor(email_id, **email_info):
     html = jinja2.Environment(
         loader=jinja2.FileSystemLoader(
             settings.ARTICLE_EMAIL_TEMPLATE_DIR + '/')
-    ).get_template(email_info['template_name']+'.html'
+    ).get_template(email_info['template_name'] + '.html'
                    ).render(data=email_info['template_data'])
 
     sender = settings.EMAIL_NOTIFICATION_SENDER
