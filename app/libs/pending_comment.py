@@ -1,3 +1,5 @@
+import app.signals
+
 from apphelpers.rest.hug import user_id, user_email
 
 from app.models import PendingComment, comment_actions, Member, groups
