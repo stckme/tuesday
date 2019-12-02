@@ -9,6 +9,7 @@ from app.libs import member as memberlib
 from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 from converge import settings
+from app import signals
 
 
 commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
@@ -88,9 +89,8 @@ def approve(id, actor: user_id):
         action=comment_actions.approved.value,
         actor=actor
     )
-    commenter = memberlib.get(comment['commenter_id'])
     ret = commentlib.create(**comment)
-    signals.comment_approved.send('approve', comment=comment, commenter=commenter)
+    signals.comment_approved.send('approved', comment=comment)
     return ret
 approve.groups_required = [groups.moderator.value]
 

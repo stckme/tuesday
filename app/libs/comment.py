@@ -58,6 +58,8 @@ def update(id, actor: user_id, **mod_data):
             action=comment_actions.picked.value,
             actor=actor
         )
+        comment = get(id)
+        signals.comment_featured.send('featured', comment=comment)
 update.groups_required = [groups.moderator.value]
 
 
