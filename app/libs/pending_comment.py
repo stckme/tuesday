@@ -1,4 +1,4 @@
-import app.signals
+import app.signals as signals
 
 from apphelpers.rest.hug import user_id, user_email
 
