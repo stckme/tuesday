@@ -19,15 +19,16 @@ TASKQ_HOST = "localhost"
 TASKQ_PORT = 6379
 TASKQ_DB = 1
 
-EMAIL_NOTIFICATION = False
+class EMAIL_NOTIFICATIONS:
+
+    ENABLED = False
+    TEMPLATE_DIR = "app/templates"
+    SENDER = "example@example.com"
+    PREFIX = ""
+
 
 # SMTP
 MD_HOST = ''
 MD_PORT = 587
 MD_USERNAME = ''
 MD_KEY = ''
-
-EMAIL_NOTIFICATION_SENDER = "example@example.com"
-TEMPLATE_DIR = "app/templates"
-ARTICLE_EMAIL_TEMPLATE_DIR = TEMPLATE_DIR + ""
-ARTICLE_EMAIL_SUBJECT_PREFIX = ""
