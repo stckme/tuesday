@@ -35,7 +35,7 @@ if settings.EMAIL_NOTIFICATIONS.ENABLED:
     @signals.comment_approved.connect
     @signals.comment_featured.connect
     def on_comment_action(action, comment):
-        commenter = memberlib.get(comment['commenter_id'])
+        commenter = memberlib.get(comment['commenter']['id'])
         commenter_email = commenter['email']
 
         asset = assetlib.get(comment['asset'])
