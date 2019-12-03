@@ -10,3 +10,5 @@ psycopg2
 converge
 gunicorn
 blinker
+html2text
+Jinja2

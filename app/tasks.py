@@ -6,7 +6,7 @@ import logging
 from app.libs import member as memberlib
 from app.libs import asset as assetlib
 import app.signals as signals
-import settings
+from converge import settings
 
 RETRY_DELAY = 60  # every 60 sec
 RETRIES = (60 * 60) / RETRY_DELAY  # 1 hour of retries
