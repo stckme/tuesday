@@ -6,6 +6,7 @@ from apphelpers.rest.hug import user_id
 from app.models import Comment, comment_actions, Member, groups, Asset
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
+from app import signals
 
 
 Model = Comment
@@ -58,6 +59,8 @@ def update(id, actor: user_id, **mod_data):
             action=comment_actions.picked.value,
             actor=actor
         )
+        comment = get(id)
+        signals.comment_featured.send('featured', comment=comment)
 update.groups_required = [groups.moderator.value]
 
 

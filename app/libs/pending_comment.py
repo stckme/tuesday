@@ -1,3 +1,5 @@
+import app.signals as signals
+
 from apphelpers.rest.hug import user_id, user_email
 
 from app.models import PendingComment, comment_actions, Member, groups
@@ -7,6 +9,7 @@ from app.libs import member as memberlib
 from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
 from converge import settings
+from app import signals
 
 
 commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
@@ -79,14 +82,16 @@ update.groups_required = [groups.moderator.value]
 
 
 def approve(id, actor: user_id):
-    pending_comment = get(id)
+    comment = get(id)
     delete(id)
     commentactionloglib.create(
         comment=id,
         action=comment_actions.approved.value,
         actor=actor
     )
-    return commentlib.create(**pending_comment)
+    ret = commentlib.create(**comment)
+    signals.comment_approved.send('approved', comment=comment)
+    return ret
 approve.groups_required = [groups.moderator.value]
 
 
