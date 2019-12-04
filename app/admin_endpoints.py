@@ -48,6 +48,8 @@ def setup_routes(factory):
     factory.post('/comments/pending/{id}/reject')(pclib.reject)
     factory.get('/comments/rejected/')(rclib.list_)
     factory.post('/comments/rejected/{id}/revert')(rclib.revert)
+    factory.post('/comments/rejected/{id}/approve')(rclib.approve)
+    factory.post('/comments/approved/{id}/reject')(commentlib.reject)
 
     member_handlers = (memberlib.list_, None, None, None, memberlib.update, None)
     factory.map_resource('/users/', handlers=member_handlers)

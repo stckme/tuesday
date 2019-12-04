@@ -1,8 +1,6 @@
-import app.signals as signals
-
 from apphelpers.rest.hug import user_id, user_email
 
-from app.models import PendingComment, comment_actions, Member, groups
+from app.models import PendingComment, comment_actions, Member, groups, SYSTEM_USER_ID
 from app.models import comment_statuses, moderation_policies, rejection_reasons
 from app.libs import comment as commentlib
 from app.libs import member as memberlib
@@ -42,7 +40,7 @@ def create(
     status = comment_statuses.pending.value
     if should_approve():
         status = comment_statuses.approved.value
-        approve(comment.id)
+        approve(comment.id, actor=SYSTEM_USER_ID)
     return {'id': comment.id, 'status': status}
 create.groups_forbidden = ['unverified']
 

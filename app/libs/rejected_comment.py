@@ -1,8 +1,10 @@
 from apphelpers.rest.hug import user_id
 
-from app.models import RejectedComment, comment_actions
+from app import signals
+from app.models import RejectedComment, comment_actions, groups
 from app.libs import pending_comment as pendingcommentlib
 from app.libs import comment_action_log as commentactionloglib
+from app.libs import comment as commentlib
 
 
 def create(
@@ -58,3 +60,19 @@ def revert(id, actor: user_id):
     del(rejected_comment['reason'])
     del(rejected_comment['commenter'])
     return pendingcommentlib.create(**rejected_comment)
+
+
+def approve(id, actor: user_id):
+    comment = get(id)
+    delete(id)
+    del(comment['note'])
+    del(comment['reason'])
+    commentactionloglib.create(
+        comment=id,
+        action=comment_actions.approved.value,
+        actor=actor
+    )
+    ret = commentlib.create(**comment)
+    signals.comment_approved.send('approved', comment=comment)
+    return ret
+approve.groups_required = [groups.moderator.value]
