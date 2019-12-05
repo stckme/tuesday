@@ -13,7 +13,10 @@ from app import signals
 commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
 
 
-def should_approve():
+def should_auto_approve():
+    """
+    Check moderation policies and decide if system should auto-approve
+    """
     if settings.MODERATION_POLICY == moderation_policies.automatic.value:
         return True
     return False
@@ -38,7 +41,7 @@ def create(
         data['created'] = created
     comment = PendingComment.create(**data)
     status = comment_statuses.pending.value
-    if should_approve():
+    if should_auto_approve():
         status = comment_statuses.approved.value
         approve(comment.id, actor=SYSTEM_USER_ID)
     return {'id': comment.id, 'status': status}

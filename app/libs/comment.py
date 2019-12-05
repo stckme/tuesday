@@ -96,7 +96,7 @@ def reject(id, actor: user_id, note='', reason=None):
         reject(
             child_comment['id'],
             actor,
-            reason=rejection_reasons.parentless.value
+            reason=rejection_reasons.parent_rejected.value
         )
     comment = get(id)
     delete(id)
