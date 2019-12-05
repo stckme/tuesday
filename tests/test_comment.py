@@ -7,7 +7,8 @@ from app.libs import pending_comment as pendingcommentlib
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import rejected_comment as rejectedcommentlib
 from app.libs import comment_action_log as commentactionloglib
-from app.models import setup_db, destroy_db, asset_request_statuses, comment_actions, SYSTEM_USER_ID
+from app.models import setup_db, destroy_db, asset_request_statuses
+from app.models import comment_actions, SYSTEM_USER_ID, rejection_reasons
 
 from tests.data import test_commenter, test_publication, test_comment
 from tests.data import test_new_publication_asset_request, test_asset_request
@@ -141,3 +142,23 @@ def test_reject():
 def test_list_rejected():
     assert len(rejectedcommentlib.list_()) == 1
     assert len(rejectedcommentlib.list_(page=2, size=50)) == 0
+
+
+def test_approve_rejected():
+    comments = rejectedcommentlib.list_()
+    comment_id = comments[0]['id']
+    rejectedcommentlib.approve(comment_id, SYSTEM_USER_ID)
+    assert not pendingcommentlib.exists(comment_id)
+    assert commentlib.exists(comment_id)
+
+    test_comment['parent'] = comment_id
+    response = pendingcommentlib.create(**test_comment)
+    child_comment_id = response['id']
+    pendingcommentlib.approve(child_comment_id, SYSTEM_USER_ID)
+    assert commentlib.exists(child_comment_id)
+
+    commentlib.reject(comment_id, SYSTEM_USER_ID, reason=rejection_reasons.spam.value)
+    assert not commentlib.exists(comment_id)
+    assert rejectedcommentlib.exists(comment_id)
+    assert not commentlib.exists(child_comment_id)
+    assert rejectedcommentlib.exists(child_comment_id)

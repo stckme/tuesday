@@ -129,6 +129,7 @@ class rejection_reasons(Enum):
     offensive = 3
     irrelevant = 4
     whataboutery = 5
+    parent_rejected = 6
 
 
 class RejectedComment(BaseComment):

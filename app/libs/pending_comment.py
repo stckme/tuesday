@@ -1,8 +1,6 @@
-import app.signals as signals
-
 from apphelpers.rest.hug import user_id, user_email
 
-from app.models import PendingComment, comment_actions, Member, groups
+from app.models import PendingComment, comment_actions, Member, groups, SYSTEM_USER_ID
 from app.models import comment_statuses, moderation_policies, rejection_reasons
 from app.libs import comment as commentlib
 from app.libs import member as memberlib
@@ -15,7 +13,10 @@ from app import signals
 commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
 
 
-def should_approve():
+def should_auto_approve():
+    """
+    Check moderation policies and decide if system should auto-approve
+    """
     if settings.MODERATION_POLICY == moderation_policies.automatic.value:
         return True
     return False
@@ -40,9 +41,9 @@ def create(
         data['created'] = created
     comment = PendingComment.create(**data)
     status = comment_statuses.pending.value
-    if should_approve():
+    if should_auto_approve():
         status = comment_statuses.approved.value
-        approve(comment.id)
+        approve(comment.id, actor=SYSTEM_USER_ID)
     return {'id': comment.id, 'status': status}
 create.groups_forbidden = ['unverified']
 
