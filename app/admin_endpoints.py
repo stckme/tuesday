@@ -27,6 +27,9 @@ def setup_routes(factory):
     factory.get('/assets/{id}/replies')(assetlib.get_replies)
     factory.get('/assets/{id}/meta')(assetlib.get_meta)
     factory.get('/assets/meta')(assetlib.get_assets_meta)
+    factory.get('/assets/{id}/comments')(assetlib.get_unfiltered_comments_view)
+    factory.get('/assets/{id}/comments/{comment_id}')(assetlib.get_comment_view)
+    factory.get('/assets/comments/featured')(assetlib.get_with_featured_comments)
 
     comment_handlers = (commentlib.list_, None, None, commentlib.get, commentlib.update, None)
     factory.map_resource('/comments/', handlers=comment_handlers)
@@ -36,7 +39,7 @@ def setup_routes(factory):
     factory.get('/actionlog/comments/{comment_id}')(actionlog.list_by_comment)
 
     factory.get('/publications/')(publicationlib.list_)
-    factory.get('/publications/{id}/assets')(publicationlib.get_assets)
+    factory.get('/publications/{id}/assets')(publicationlib.get_assets_with_comment_stats)
 
     pc_handlers = (pclib.list_, None, None, pclib.get, None, None)
     factory.map_resource('/comments/pending/', handlers=pc_handlers)
@@ -45,6 +48,8 @@ def setup_routes(factory):
     factory.post('/comments/pending/{id}/reject')(pclib.reject)
     factory.get('/comments/rejected/')(rclib.list_)
     factory.post('/comments/rejected/{id}/revert')(rclib.revert)
+    factory.post('/comments/rejected/{id}/approve')(rclib.approve)
+    factory.post('/comments/approved/{id}/reject')(commentlib.reject)
 
     member_handlers = (memberlib.list_, None, None, None, memberlib.update, None)
     factory.map_resource('/users/', handlers=member_handlers)

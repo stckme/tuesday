@@ -6,8 +6,14 @@ from apphelpers.rest.hug import APIFactory
 from app.endpoints import setup_routes
 
 import app.models
+import app.tasks
 
 from converge import settings
+
+
+@hug.not_found()
+def not_found_handler():
+    return "Not Found"
 
 
 def make_app():

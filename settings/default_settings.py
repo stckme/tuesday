@@ -13,3 +13,22 @@ DEFAULT_REPLIES_FETCH_LIMIT = 100
 MODERATION_POLICY = 2 # 1:Automatic, 2:Manual
 
 SSO_API_URL = "http://localhost:9000/api/1.0/"
+
+# Redis
+TASKQ_HOST = "localhost"
+TASKQ_PORT = 6379
+TASKQ_DB = 1
+
+class EMAIL_NOTIFICATIONS:
+
+    ENABLED = False
+    TEMPLATE_DIR = "app/templates"
+    SENDER = "example@example.com"
+    PREFIX = ""
+
+
+# SMTP
+MD_HOST = ''
+MD_PORT = 587
+MD_USERNAME = ''
+MD_KEY = ''

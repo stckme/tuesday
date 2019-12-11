@@ -3,18 +3,26 @@ from peewee import fn
 
 from apphelpers.rest.hug import user_id
 
-from app.models import Comment, comment_actions, Member, groups, Asset
+from app.models import Comment, Member, Asset
+from app.models import rejection_reasons, groups, comment_actions
 from app.libs import archived_comment as archivedcommentlib
 from app.libs import comment_action_log as commentactionloglib
+from app.libs import rejected_comment as rejectedcommentlib
+from app import signals
 
 
 Model = Comment
-model_common_fields = ['id', 'editors_pick', 'asset', 'content',
-                         'parent', 'created', 'commenter']
+model_common_fields = [
+    'id', 'editors_pick', 'asset', 'content',
+    'parent', 'created', 'commenter', 'commenter_id'
+]
 commenter_fields = [Member.id, Member.username, Member.name, Member.badges]
 
 
-def create(id, commenter_id: user_id, commenter, editors_pick, asset, content, ip_address, parent, created):
+def create(
+        id, commenter_id: user_id, commenter, editors_pick, asset, content,
+        ip_address, parent, created
+    ):
     comment = Comment.create(
         id=id,
         commenter_id=commenter_id,
@@ -34,6 +42,11 @@ def get(id, fields=None):
     model_fields = [getattr(Model, field) for field in fields]
     instance = Model.select(*model_fields).where(Model.id == id).first()
     return instance.to_dict() if instance else None
+
+
+def get_by_parent(parent):
+    comments = Model.select().where(Model.parent == parent).execute()
+    return [comment.to_dict() for comment in comments]
 
 
 def list_(asset_id=None, editors_pick: hug.types.smart_boolean=None, page=1, size=20):
@@ -58,6 +71,8 @@ def update(id, actor: user_id, **mod_data):
             action=comment_actions.picked.value,
             actor=actor
         )
+        comment = get(id)
+        signals.comment_featured.send('featured', comment=comment)
 update.groups_required = [groups.moderator.value]
 
 
@@ -74,6 +89,29 @@ def archive(id):
     comment = get(id, model_common_fields+['created', 'commenter_id'])
     delete(id)
     return archivedcommentlib.create(**comment)
+
+
+def reject(id, actor: user_id, note='', reason=None):
+    for child_comment in get_by_parent(id):
+        reject(
+            child_comment['id'],
+            actor,
+            reason=rejection_reasons.parent_rejected.value
+        )
+    comment = get(id)
+    delete(id)
+
+    commentactionloglib.create(
+        comment=id,
+        action=comment_actions.rejected.value,
+        actor=actor
+    )
+    return rejectedcommentlib.create(
+        **comment,
+        note=note,
+        reason=reason or rejection_reasons.other.value
+    )
+reject.groups_required = [groups.moderator.value]
 
 
 def get_replies(parent, limit=None, offset=None):
