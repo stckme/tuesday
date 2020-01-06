@@ -83,4 +83,7 @@ def setup_routes(factory):
     factory.get('/stats/assets/comments/count/last2days/top/{top}')(statslib.last2days_top_commented_articles)
     factory.get('/stats/assets/open')(statslib.open_assets)
     factory.get('/stats/comments/pending')(statslib.pending_comments_by_asset)
+    factory.get('/stats/comments/pending/lastndays/{n}')(statslib.pending_comments_by_asset_lastNdays)
+    factory.get('/stats/comments/rejected')(statslib.rejected_comments)
+    factory.get('/stats/comments/rejected/lastnmonths/{n}')(statslib.rejected_comments_lastNmonths)
     factory.get('/stats/commenters/featuredcomments')(statslib.featured_comments)
