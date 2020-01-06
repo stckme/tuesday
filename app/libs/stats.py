@@ -1,6 +1,5 @@
 from peewee import fn, SQL
 from app.models import Comment, RejectedComment, Member, groups, Asset, PendingComment, rejection_reasons
-from collections import Counter
 import re
 import arrow
 from datetime import datetime
