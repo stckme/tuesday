@@ -27,6 +27,9 @@ stats_func_list = ['curr_month_top_commenters',
                    'monthly_unique_commenters_count_lastNmonths',
                    'open_assets',
                    'pending_comments_by_asset',
+                   'pending_comments_by_asset_lastNdays',
+                   'rejected_comments',
+                   'rejected_comments_lastNmonths',
                    'total_comments',
                    'total_comments_lastNdays',
                    'weekly_comments_count',
@@ -285,3 +288,9 @@ def rejected_comments_lastNmonths(n=4):
 # creates a dict of all the above stats with function name as keys and their return data as values
 def get_all_stats():
     return dict((name, getattr(sys.modules[__name__], name)()) for name in stats_func_list)
+
+
+# allows only logged-in moderators to access the APIs
+for name in stats_func_list:
+    getattr(sys.modules[__name__], name).groups_required = [groups.moderator.value]
+    getattr(sys.modules[__name__], name).login_required = True
