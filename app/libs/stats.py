@@ -18,16 +18,12 @@ def get_total_comments(since=None):
         'rejected': rejected.count(),
         'total': approved.count() + rejected.count()
     }
-
-
 get_total_comments.groups_required = [groups.moderator.value]
 
 
 def get_total_comments_lastNdays(n=0):
     return get_total_comments(
         arrow.utcnow().shift(days=-int(n)).span('day')[0].date())
-
-
 get_total_comments_lastNdays.groups_required = [groups.moderator.value]
 
 
@@ -62,8 +58,6 @@ def get_monthly_comments_count(since=None):
                                        approved=approved,
                                        rejected=rejected)
     return ret
-
-
 get_monthly_comments_count.groups_required = [groups.moderator.value]
 
 
@@ -76,8 +70,6 @@ def get_monthly_comments_count_lastNmonths(n=4):
             last_metric_value=ret[-1][0],
             default_value=(0, 0, 0, 0)))
     return ret
-
-
 get_monthly_comments_count_lastNmonths.groups_required = [
     groups.moderator.value
 ]
@@ -114,8 +106,6 @@ def get_weekly_comments_count(since=None):
                                        approved=approved,
                                        rejected=rejected)
     return ret
-
-
 get_weekly_comments_count.groups_required = [groups.moderator.value]
 
 
@@ -128,8 +118,6 @@ def get_weekly_comments_count_lastNweeks(n=4):
             last_metric_value=ret[-1][0],
             default_value=(0, 0, 0, 0)))
     return ret
-
-
 get_weekly_comments_count_lastNweeks.groups_required = [groups.moderator.value]
 
 
@@ -145,16 +133,12 @@ def get_hourly_comments_count(since=None):
     if since:
         comments = comments.where(Comment.created >= since)
     return [(h, c) for (h, c) in comments.tuples()]
-
-
 get_hourly_comments_count.groups_required = [groups.moderator.value]
 
 
 def get_hourly_comments_count_lastNdays(n=120):
     return get_hourly_comments_count(
         arrow.utcnow().shift(days=-int(n)).span('day')[0].date())
-
-
 get_hourly_comments_count_lastNdays.groups_required = [groups.moderator.value]
 
 
@@ -178,16 +162,12 @@ def get_pending_comments_by_asset(since=None):
         'total_pending': total_pending,
         'pending_comments_by_asset': pending_comments_by_asset
     }
-
-
 get_pending_comments_by_asset.groups_required = [groups.moderator.value]
 
 
 def get_pending_comments_by_asset_lastNdays(n=7):
     return get_pending_comments_by_asset(
         arrow.utcnow().shift(days=-int(n)).span('day')[0].date())
-
-
 get_pending_comments_by_asset_lastNdays.groups_required = [
     groups.moderator.value
 ]
@@ -201,8 +181,6 @@ def get_open_assets():
         ).tuples()
     open_assets = [asset_url for asset_url, in open_assets]
     return {'count': len(open_assets), 'open_assets': open_assets}
-
-
 get_open_assets.groups_required = [groups.moderator.value]
 
 
@@ -227,8 +205,6 @@ def get_weekly_unique_commenters_count(since=None):
     ret = fill_output_with_default_values(metric_counter=weeks,
                                           output=weekly_commenters_count)
     return ret
-
-
 get_weekly_unique_commenters_count.groups_required = [groups.moderator.value]
 
 
@@ -239,8 +215,6 @@ def get_weekly_unique_commenters_count_lastNweeks(n=4):
         fill_output_with_default_values_for_lastNmetrics(
             metric='week', last_metric_value=ret[-1][0]))
     return ret
-
-
 get_weekly_unique_commenters_count_lastNweeks.groups_required = [
     groups.moderator.value
 ]
@@ -267,8 +241,6 @@ def get_monthly_unique_commenters_count(since=None):
     ret = fill_output_with_default_values(metric_counter=months,
                                           output=monthly_commenters_count)
     return ret
-
-
 get_monthly_unique_commenters_count.groups_required = [groups.moderator.value]
 
 
@@ -279,8 +251,6 @@ def get_monthly_unique_commenters_count_lastNmonths(n=4):
         fill_output_with_default_values_for_lastNmetrics(
             metric='month', last_metric_value=ret[-1][0]))
     return ret
-
-
 get_monthly_unique_commenters_count_lastNmonths.groups_required = [
     groups.moderator.value
 ]
@@ -297,8 +267,6 @@ def get_yearly_unique_commenters_count():
         )
     return [(m.date().isoformat(), c)
             for m, c in yearly_commenters_count.tuples()]
-
-
 get_yearly_unique_commenters_count.groups_required = [groups.moderator.value]
 
 
@@ -316,8 +284,6 @@ def get_curr_week_top_commenters(top=3):
         )
     return [(commenter['name'], count)
             for w, commenter, count in curr_week_top_commenters.tuples()]
-
-
 get_curr_week_top_commenters.groups_required = [groups.moderator.value]
 
 
@@ -335,8 +301,6 @@ def get_curr_month_top_commenters(top=3):
         )
     return [(commenter['name'], count)
             for m, commenter, count in curr_month_top_commenters.tuples()]
-
-
 get_curr_month_top_commenters.groups_required = [groups.moderator.value]
 
 
@@ -354,8 +318,6 @@ def get_curr_year_top_commenters(top=3):
         )
     return [(commenter['name'], count)
             for y, commenter, count in curr_year_top_commenters.tuples()]
-
-
 get_curr_year_top_commenters.groups_required = [groups.moderator.value]
 
 
@@ -397,8 +359,6 @@ def get_monthly_top_commenters(top=3, since=None):
                                           output=monthly_top_commenters,
                                           default_value=[])
     return ret
-
-
 get_monthly_top_commenters.groups_required = [groups.moderator.value]
 
 
@@ -410,8 +370,6 @@ def get_monthly_top_commenters_lastNmonths(top=3, n=4):
         fill_output_with_default_values_for_lastNmetrics(
             metric='month', last_metric_value=ret[-1][0], default_value=[]))
     return ret
-
-
 get_monthly_top_commenters_lastNmonths.groups_required = [
     groups.moderator.value
 ]
@@ -457,8 +415,6 @@ def get_monthly_top_commented_articles(top=10, since=None):
           output=monthly_top_commented_articles,
           default_value=[])
     return ret
-
-
 get_monthly_top_commented_articles.groups_required = [groups.moderator.value]
 
 
@@ -470,8 +426,6 @@ def get_monthly_top_commented_articles_lastNmonths(top=10, n=4):
         fill_output_with_default_values_for_lastNmetrics(
             metric='month', last_metric_value=ret[-1][0], default_value=[]))
     return ret
-
-
 get_monthly_top_commented_articles_lastNmonths.groups_required = [
     groups.moderator.value
 ]
@@ -491,8 +445,6 @@ def get_last2days_top_commented_articles(top=10):
         ).limit(int(top))
     return [(Asset.get_by_id(asset_id).url, count)
             for asset_id, count in last2days_top_commented_articles.tuples()]
-
-
 get_last2days_top_commented_articles.groups_required = [groups.moderator.value]
 
 
@@ -510,8 +462,6 @@ def get_featured_comments():
     commenters = [(commenter['name'], count)
                   for commenter, count in featured_comments]
     return {'count': count, 'commenters': commenters}
-
-
 get_featured_comments.groups_required = [groups.moderator.value]
 
 
@@ -539,16 +489,12 @@ def get_rejected_comments(since=None):
         rejected_comments[reasons]['count'] = count
         rejected_comments[reasons]['commenter'] = commenters
     return rejected_comments
-
-
 get_rejected_comments.groups_required = [groups.moderator.value]
 
 
 def get_rejected_comments_lastNmonths(n=4):
     return get_rejected_comments(
         arrow.utcnow().shift(months=-int(n)).span('month')[0].date())
-
-
 get_rejected_comments_lastNmonths.groups_required = [groups.moderator.value]
 
 
