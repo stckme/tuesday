@@ -521,19 +521,23 @@ def merge_approved_rejected_list(metric_counter, approved, rejected):
         if (app_counter < len(approved) and approved[app_counter][0] == value
             ) and (rej_counter < len(rejected)
                    and rejected[rej_counter][0] == value):
-            m1, c = approved[app_counter]
-            m2, rc = rejected[rej_counter]
-            total_comments.append((m1.date().isoformat(), c, rc, (c + rc),
-                                   round(c * 100 / (c + rc))))
+            app_month, app_comments = approved[app_counter]
+            rej_month, rej_comments = rejected[rej_counter]
+            total_comments.append(
+                (app_month.date().isoformat(), app_comments, rej_comments,
+                 (app_comments + rej_comments),
+                 round(app_comments * 100 / (app_comments + rej_comments))))
             app_counter += 1
             rej_counter += 1
         elif rej_counter < len(rejected) and rejected[rej_counter][0] == value:
-            m2, rc = rejected[rej_counter]
-            total_comments.append((m2.date().isoformat(), 0, rc, rc, 0))
+            rej_month, rej_comments = rejected[rej_counter]
+            total_comments.append((rej_month.date().isoformat(), 0,
+                                   rej_comments, rej_comments, 0))
             rej_counter += 1
         elif app_counter < len(approved) and approved[app_counter][0] == value:
-            m1, c = approved[app_counter]
-            total_comments.append((m1.date().isoformat(), c, 0, c, 100))
+            app_month, app_comments = approved[app_counter]
+            total_comments.append((app_month.date().isoformat(), app_comments,
+                                   0, app_comments, 100))
             app_counter += 1
         else:
             total_comments.append((value.date().isoformat(), 0, 0, 0, 0))
