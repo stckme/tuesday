@@ -7,6 +7,7 @@ import app.libs.comment as commentlib
 import app.libs.comment_action_log as actionlog
 import app.libs.member as memberlib
 import app.libs.publication as publicationlib
+import app.libs.stats as statslib
 import apphelpers.sessions as sessionlib
 
 
@@ -56,3 +57,32 @@ def setup_routes(factory):
 
     factory.post('/assets/{id}/stop')(assetlib.stop)
     factory.post('/assets/{id}/restart')(assetlib.restart)
+
+    # Routes for comments stats
+    factory.get('/stats/comments/count/total')(statslib.get_total_comments)
+    factory.get('/stats/comments/count/lastndays/{n}')(statslib.get_total_comments_lastNdays)
+    factory.get('/stats/comments/count/monthly')(statslib.get_monthly_comments_count)
+    factory.get('/stats/comments/count/monthly/lastnmonths/{n}')(statslib.get_monthly_comments_count_lastNmonths)
+    factory.get('/stats/comments/count/weekly')(statslib.get_weekly_comments_count)
+    factory.get('/stats/comments/count/weekly/lastnweeks/{n}')(statslib.get_weekly_comments_count_lastNweeks)
+    factory.get('/stats/comments/count/hourly')(statslib.get_hourly_comments_count)
+    factory.get('/stats/comments/count/hourly/lastndays/{n}')(statslib.get_hourly_comments_count_lastNdays)
+    factory.get('/stats/commenters/count/weekly')(statslib.get_weekly_unique_commenters_count)
+    factory.get('/stats/commenters/count/weekly/lastnweeks/{n}')(statslib.get_weekly_unique_commenters_count_lastNweeks)
+    factory.get('/stats/commenters/count/monthly')(statslib.get_monthly_unique_commenters_count)
+    factory.get('/stats/commenters/count/monthly/lastnmonths/{n}')(statslib.get_monthly_unique_commenters_count_lastNmonths)
+    factory.get('/stats/commenters/count/yearly')(statslib.get_yearly_unique_commenters_count)
+    factory.get('/stats/commenters/count/currentweek/top/{top}')(statslib.get_curr_week_top_commenters)
+    factory.get('/stats/commenters/count/currentmonth/top/{top}')(statslib.get_curr_month_top_commenters)
+    factory.get('/stats/commenters/count/currentyear/top/{top}')(statslib.get_curr_year_top_commenters)
+    factory.get('/stats/commenters/count/monthly/top/{top}')(statslib.get_monthly_top_commenters)
+    factory.get('/stats/commenters/count/monthly/top/{top}/lastnmonths/{n}')(statslib.get_monthly_top_commenters_lastNmonths)
+    factory.get('/stats/assets/comments/count/monthly/top/{top}')(statslib.get_monthly_top_commented_articles)
+    factory.get('/stats/assets/comments/count/monthly/top/{top}/lastnmonths/{n}')(statslib.get_monthly_top_commented_articles_lastNmonths)
+    factory.get('/stats/assets/comments/count/last2days/top/{top}')(statslib.get_last2days_top_commented_articles)
+    factory.get('/stats/assets/open')(statslib.get_open_assets)
+    factory.get('/stats/comments/pending')(statslib.get_pending_comments_by_asset)
+    factory.get('/stats/comments/pending/lastndays/{n}')(statslib.get_pending_comments_by_asset_lastNdays)
+    factory.get('/stats/comments/rejected')(statslib.get_rejected_comments)
+    factory.get('/stats/comments/rejected/lastnmonths/{n}')(statslib.get_rejected_comments_lastNmonths)
+    factory.get('/stats/commenters/featuredcomments')(statslib.get_featured_comments)
