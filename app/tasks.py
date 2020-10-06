@@ -28,7 +28,7 @@ if settings.EMAIL_NOTIFICATIONS.ENABLED:
         html = template_env.get_template(template).render(data=template_data)
         sender = settings.EMAIL_NOTIFICATIONS.SENDER
         subject = settings.EMAIL_NOTIFICATIONS.PREFIX + subject
-        send_email(sender, recipient=commenter_email, subject=subject, html=html)
+        send_email(sender, recipients=[commenter_email], subject=subject, html=html)
         logging.info('{} mail sent to {}'.format(template, commenter_email))
 
     @queue.task(autoretry_for=(Exception,), max_retries=5, default_retry_delay=RETRY_DELAY)
